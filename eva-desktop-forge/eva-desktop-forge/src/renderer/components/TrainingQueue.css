@@ -1,0 +1,432 @@
+/* Training Queue Styles */
+.training-queue {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  color: #ffffff;
+  overflow-y: auto;
+}
+
+/* Header */
+.queue-header {
+  margin-bottom: 25px;
+}
+
+.queue-header h2 {
+  color: #ff7722;
+  margin-bottom: 15px;
+  font-size: 24px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.queue-stats {
+  display: flex;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 15px;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 119, 34, 0.2);
+}
+
+.stat-item.warning {
+  border-color: rgba(255, 200, 0, 0.4);
+  background: rgba(255, 200, 0, 0.1);
+}
+
+.stat-label {
+  font-size: 12px;
+  color: #cccccc;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.stat-value {
+  font-size: 16px;
+  color: #00d4ff;
+  font-weight: bold;
+}
+
+.stat-item.warning .stat-value {
+  color: #ffc800;
+}
+
+/* Currently Training Section */
+.current-training {
+  margin-bottom: 30px;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 12px;
+  border: 1px solid rgba(0, 212, 255, 0.3);
+}
+
+.current-training h3 {
+  color: #00d4ff;
+  margin-bottom: 15px;
+  font-size: 16px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.current-skill {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.skill-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.skill-name {
+  font-size: 18px;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.skill-level {
+  font-size: 14px;
+  color: #ff7722;
+  font-weight: bold;
+}
+
+.progress-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.progress-bar {
+  height: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+
+.progress-bar.large {
+  height: 12px;
+}
+
+.progress-bar.small {
+  height: 4px;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #ff7722, #00d4ff);
+  transition: width 0.3s ease;
+  position: relative;
+}
+
+.progress-fill.active {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+.progress-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 2px;
+  background: #ffffff;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+  animation: glow 1s ease-in-out infinite;
+}
+
+@keyframes glow {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.progress-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.time-remaining {
+  font-size: 16px;
+  color: #ff7722;
+  font-weight: bold;
+}
+
+.finish-time {
+  font-size: 12px;
+  color: #cccccc;
+}
+
+/* Queue Timeline */
+.queue-timeline {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.queue-timeline h3 {
+  color: #ff7722;
+  margin-bottom: 20px;
+  font-size: 16px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.timeline-container {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.timeline-items {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.timeline-item {
+  display: flex;
+  gap: 20px;
+  position: relative;
+  padding-bottom: 20px;
+}
+
+.timeline-item:last-child {
+  padding-bottom: 0;
+}
+
+.timeline-item.active .timeline-content {
+  background: rgba(0, 212, 255, 0.1);
+  border-color: rgba(0, 212, 255, 0.4);
+}
+
+.timeline-item.pending .timeline-content {
+  opacity: 0.7;
+}
+
+/* Timeline Marker */
+.timeline-marker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 30px;
+  flex-shrink: 0;
+}
+
+.marker-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(255, 119, 34, 0.5);
+  border: 2px solid #ff7722;
+  z-index: 1;
+}
+
+.timeline-item.active .marker-dot {
+  background: #00d4ff;
+  border-color: #00d4ff;
+  box-shadow: 0 0 10px rgba(0, 212, 255, 0.6);
+}
+
+.marker-line {
+  width: 2px;
+  flex: 1;
+  background: rgba(255, 119, 34, 0.3);
+  margin-top: 5px;
+}
+
+/* Timeline Content */
+.timeline-content {
+  flex: 1;
+  padding: 15px;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 119, 34, 0.2);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.timeline-content:hover {
+  background: rgba(0, 0, 0, 0.5);
+  border-color: rgba(255, 119, 34, 0.4);
+}
+
+.timeline-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.skill-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.queue-position {
+  font-size: 12px;
+  color: #ff7722;
+  font-weight: bold;
+  padding: 2px 6px;
+  background: rgba(255, 119, 34, 0.2);
+  border-radius: 4px;
+}
+
+.time-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.duration {
+  font-size: 14px;
+  color: #00d4ff;
+  font-weight: bold;
+}
+
+.timeline-progress {
+  margin-bottom: 10px;
+}
+
+.timeline-details {
+  display: flex;
+  gap: 20px;
+  font-size: 11px;
+  color: #888888;
+}
+
+.start-time, .end-time {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* Empty Queue */
+.empty-queue {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.empty-queue p {
+  color: #cccccc;
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+.empty-queue small {
+  color: #888888;
+  font-size: 12px;
+}
+
+/* Loading and Error States */
+.loading-container, .error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(255, 119, 34, 0.2);
+  border-top: 3px solid #ff7722;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.error-container h3 {
+  color: #ff4444;
+  margin-bottom: 10px;
+}
+
+.error-container p {
+  color: #cccccc;
+  margin-bottom: 20px;
+}
+
+.retry-btn {
+  background: rgba(255, 119, 34, 0.8);
+  color: #ffffff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 600;
+  transition: background 0.3s ease;
+}
+
+.retry-btn:hover {
+  background: rgba(255, 119, 34, 1);
+}
+
+/* Actions */
+.queue-actions {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 119, 34, 0.2);
+  display: flex;
+  justify-content: center;
+}
+
+.refresh-btn {
+  background: rgba(0, 212, 255, 0.8);
+  color: #ffffff;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 600;
+  transition: background 0.3s ease;
+}
+
+.refresh-btn:hover:not(:disabled) {
+  background: rgba(0, 212, 255, 1);
+}
+
+.refresh-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

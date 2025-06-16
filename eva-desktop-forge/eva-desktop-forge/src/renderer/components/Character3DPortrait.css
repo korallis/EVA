@@ -1,0 +1,609 @@
+/* Character 3D Portrait Component */
+.character-3d-portrait {
+  position: relative;
+  border-radius: 50%;
+  overflow: hidden;
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-style: preserve-3d;
+  perspective: 1000px;
+}
+
+.character-3d-portrait:hover {
+  transform: scale(1.05) rotateY(5deg);
+}
+
+/* Character Portrait Mode */
+.character-mode {
+  background: radial-gradient(circle at center, rgba(52, 152, 219, 0.2) 0%, rgba(13, 17, 35, 0.8) 70%);
+  border: 3px solid #3498db;
+  box-shadow: 
+    0 0 30px rgba(52, 152, 219, 0.6),
+    inset 0 0 30px rgba(52, 152, 219, 0.1);
+}
+
+.character-portrait-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.character-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+  transform: scale(1.1);
+  filter: contrast(1.1) saturate(1.2);
+}
+
+.character-image.loaded {
+  opacity: 1;
+}
+
+/* 3D Enhancement Layers */
+.portrait-3d-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  border-radius: 50%;
+}
+
+.depth-layer {
+  position: absolute;
+  border-radius: 50%;
+  background: linear-gradient(135deg, transparent 30%, rgba(52, 152, 219, 0.1) 50%, transparent 70%);
+  animation: rotateDepth 8s linear infinite;
+}
+
+.depth-layer.layer-1 {
+  top: -5%;
+  left: -5%;
+  right: -5%;
+  bottom: -5%;
+  animation-duration: 12s;
+}
+
+.depth-layer.layer-2 {
+  top: -10%;
+  left: -10%;
+  right: -10%;
+  bottom: -10%;
+  animation-duration: 15s;
+  animation-direction: reverse;
+}
+
+.depth-layer.layer-3 {
+  top: -15%;
+  left: -15%;
+  right: -15%;
+  bottom: -15%;
+  animation-duration: 20s;
+}
+
+@keyframes rotateDepth {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.portrait-glow {
+  position: absolute;
+  top: -20%;
+  left: -20%;
+  right: -20%;
+  bottom: -20%;
+  background: radial-gradient(circle, rgba(52, 152, 219, 0.3) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: pulseGlow 3s ease-in-out infinite alternate;
+}
+
+@keyframes pulseGlow {
+  from { 
+    transform: scale(0.8);
+    opacity: 0.6;
+  }
+  to { 
+    transform: scale(1.2);
+    opacity: 0.3;
+  }
+}
+
+/* HUD Elements */
+.hud-elements {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+}
+
+.hud-corner {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #3498db;
+  opacity: 0.7;
+}
+
+.hud-corner.top-left {
+  top: 10%;
+  left: 10%;
+  border-right: none;
+  border-bottom: none;
+}
+
+.hud-corner.top-right {
+  top: 10%;
+  right: 10%;
+  border-left: none;
+  border-bottom: none;
+}
+
+.hud-corner.bottom-left {
+  bottom: 10%;
+  left: 10%;
+  border-right: none;
+  border-top: none;
+}
+
+.hud-corner.bottom-right {
+  bottom: 10%;
+  right: 10%;
+  border-left: none;
+  border-top: none;
+}
+
+.hud-line {
+  position: absolute;
+  background: linear-gradient(90deg, transparent, #3498db, transparent);
+  opacity: 0.5;
+}
+
+.hud-line.horizontal {
+  height: 1px;
+  left: 20%;
+  right: 20%;
+}
+
+.hud-line.horizontal.top {
+  top: 15%;
+}
+
+.hud-line.horizontal.bottom {
+  bottom: 15%;
+}
+
+.hud-line.vertical {
+  width: 1px;
+  top: 20%;
+  bottom: 20%;
+  background: linear-gradient(180deg, transparent, #3498db, transparent);
+}
+
+.hud-line.vertical.left {
+  left: 15%;
+}
+
+.hud-line.vertical.right {
+  right: 15%;
+}
+
+.status-indicator {
+  position: absolute;
+  top: 5%;
+  right: 5%;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 8px;
+  color: #27ae60;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+}
+
+.status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #27ae60;
+  box-shadow: 0 0 8px rgba(39, 174, 96, 0.6);
+  animation: pulse 2s infinite;
+}
+
+.character-info-overlay {
+  position: absolute;
+  bottom: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  color: #ffffff;
+  text-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+}
+
+.character-name {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 2px;
+}
+
+.character-status {
+  font-size: 8px;
+  color: #3498db;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Hologram Mode */
+.hologram-mode {
+  background: radial-gradient(circle at center, rgba(230, 126, 34, 0.1) 0%, rgba(13, 17, 35, 0.9) 70%);
+  border: 3px solid #e67e22;
+  box-shadow: 
+    0 0 40px rgba(230, 126, 34, 0.6),
+    inset 0 0 40px rgba(230, 126, 34, 0.1);
+}
+
+.hologram-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hologram-core {
+  position: relative;
+  width: 60%;
+  height: 60%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.8;
+}
+
+.hologram-face {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  border: 2px solid #e67e22;
+  border-radius: 50%;
+  margin-bottom: 10px;
+  background: rgba(230, 126, 34, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  animation: hologramFlicker 0.1s infinite alternate;
+}
+
+.hologram-eyes {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.hologram-eye {
+  width: 4px;
+  height: 4px;
+  background: #e67e22;
+  border-radius: 50%;
+  box-shadow: 0 0 6px rgba(230, 126, 34, 0.8);
+  animation: eyeGlow 2s ease-in-out infinite alternate;
+}
+
+.hologram-mouth {
+  width: 8px;
+  height: 2px;
+  background: #e67e22;
+  border-radius: 2px;
+  box-shadow: 0 0 4px rgba(230, 126, 34, 0.6);
+}
+
+.hologram-body {
+  position: relative;
+  width: 30px;
+  height: 40px;
+  border: 2px solid #e67e22;
+  border-radius: 8px;
+  background: rgba(230, 126, 34, 0.05);
+}
+
+.hologram-chest {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 12px;
+  height: 12px;
+  border: 1px solid #e67e22;
+  border-radius: 2px;
+  background: rgba(230, 126, 34, 0.2);
+}
+
+.hologram-shoulders {
+  position: absolute;
+  top: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 20px;
+}
+
+.shoulder {
+  width: 8px;
+  height: 8px;
+  border: 1px solid #e67e22;
+  border-radius: 50%;
+  background: rgba(230, 126, 34, 0.1);
+}
+
+@keyframes hologramFlicker {
+  0% { opacity: 0.8; }
+  50% { opacity: 0.6; }
+  100% { opacity: 0.9; }
+}
+
+@keyframes eyeGlow {
+  from { 
+    box-shadow: 0 0 6px rgba(230, 126, 34, 0.8);
+  }
+  to { 
+    box-shadow: 0 0 12px rgba(230, 126, 34, 1);
+  }
+}
+
+/* Scan Lines */
+.scan-lines {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+}
+
+.scan-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #e67e22, transparent);
+  opacity: 0.6;
+  animation: scanMove 3s linear infinite;
+}
+
+@keyframes scanMove {
+  0% {
+    top: -2px;
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.6;
+  }
+  90% {
+    opacity: 0.6;
+  }
+  100% {
+    top: 100%;
+    opacity: 0;
+  }
+}
+
+/* Energy Field */
+.energy-field {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 120%;
+  height: 120%;
+  pointer-events: none;
+}
+
+.energy-ring {
+  position: absolute;
+  border: 1px solid rgba(230, 126, 34, 0.3);
+  border-radius: 50%;
+  animation: energyPulse 4s ease-in-out infinite;
+}
+
+.energy-ring.ring-1 {
+  top: 10%;
+  left: 10%;
+  right: 10%;
+  bottom: 10%;
+  animation-delay: 0s;
+}
+
+.energy-ring.ring-2 {
+  top: 5%;
+  left: 5%;
+  right: 5%;
+  bottom: 5%;
+  animation-delay: 1.5s;
+}
+
+.energy-ring.ring-3 {
+  top: 0%;
+  left: 0%;
+  right: 0%;
+  bottom: 0%;
+  animation-delay: 3s;
+}
+
+@keyframes energyPulse {
+  0%, 100% {
+    opacity: 0.2;
+    transform: scale(0.8);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.2);
+  }
+}
+
+/* Data Streams */
+.data-streams {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.data-particle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 2px;
+  height: 2px;
+  background: #e67e22;
+  border-radius: 50%;
+  box-shadow: 0 0 4px rgba(230, 126, 34, 0.8);
+  animation: dataStream 2s linear infinite;
+  transform-origin: 0 0;
+}
+
+@keyframes dataStream {
+  0% {
+    opacity: 0;
+    transform: translateX(0) scale(0);
+  }
+  20% {
+    opacity: 1;
+    transform: translateX(20px) scale(1);
+  }
+  80% {
+    opacity: 1;
+    transform: translateX(40px) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(60px) scale(0);
+  }
+}
+
+/* Hologram Text */
+.hologram-text {
+  position: absolute;
+  bottom: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  font-size: 6px;
+  color: #e67e22;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+  opacity: 0.7;
+}
+
+.text-line {
+  margin-bottom: 2px;
+  animation: textFlicker 0.15s infinite alternate;
+}
+
+.text-line:nth-child(2) {
+  animation-delay: 0.05s;
+}
+
+.text-line:nth-child(3) {
+  animation-delay: 0.1s;
+}
+
+@keyframes textFlicker {
+  0% { opacity: 0.7; }
+  100% { opacity: 0.3; }
+}
+
+/* Ambient Particles */
+.ambient-particles {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  overflow: hidden;
+  border-radius: 50%;
+}
+
+.particle {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  background: rgba(52, 152, 219, 0.6);
+  border-radius: 50%;
+  animation: particleFloat 5s ease-in-out infinite;
+}
+
+.hologram-mode .particle {
+  background: rgba(230, 126, 34, 0.6);
+}
+
+@keyframes particleFloat {
+  0%, 100% {
+    opacity: 0;
+    transform: translateY(20px) scale(0);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-20px) scale(1);
+  }
+}
+
+/* Size Variations */
+.character-3d-portrait.small {
+  font-size: 0.7em;
+}
+
+.character-3d-portrait.small .hud-corner {
+  width: 12px;
+  height: 12px;
+}
+
+.character-3d-portrait.small .status-indicator {
+  font-size: 6px;
+}
+
+.character-3d-portrait.small .character-name {
+  font-size: 7px;
+}
+
+.character-3d-portrait.small .character-status {
+  font-size: 5px;
+}
+
+.character-3d-portrait.medium {
+  font-size: 0.85em;
+}
+
+.character-3d-portrait.medium .hud-corner {
+  width: 16px;
+  height: 16px;
+}
+
+/* Pulse Animation */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(0.95);
+  }
+}
