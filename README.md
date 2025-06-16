@@ -93,7 +93,7 @@ EVA transforms how you interact with EVE Online by providing a comprehensive des
 
 ### **Phase 1: Core Enhancement** *(Next 2-3 months)*
 - Fix character attributes with proper ESI integration
-- Improve DPS calculation accuracy to match industry standards
+- Improve DPS calculation accuracy for all weapon systems
 - Enhanced error handling and user feedback
 - Performance optimizations for large datasets
 
@@ -188,7 +188,6 @@ EVE Online, the EVE logo, EVE and all associated logos and designs are the intel
 
 - **CCP Games** for creating EVE Online and providing the ESI API
 - **EVE Community** for feedback, testing, and feature suggestions  
-- **Pyfa Project** for inspiration on fitting calculations
 - **Open Source Contributors** whose libraries make EVA possible
 
 ---
