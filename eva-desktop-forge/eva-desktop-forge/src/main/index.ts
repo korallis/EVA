@@ -42,6 +42,11 @@ const createWindow = (): void => {
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
       nodeIntegration: false,
       contextIsolation: true,
+      webSecurity: true,
+      allowRunningInsecureContent: false,
+      experimentalFeatures: false,
+      enableBlinkFeatures: '', // Disable experimental features
+      disableBlinkFeatures: 'Autofill' // Disable autofill to prevent console errors
     },
     icon: require('path').join(__dirname, '../assets/icons/icon.png'),
     show: false // Don't show until ready
@@ -60,9 +65,15 @@ const createWindow = (): void => {
     }
   });
 
-  // Open DevTools in development
+  // Open DevTools in development with proper configuration
   if (settingsService.isDevelopmentMode()) {
-    mainWindow.webContents.openDevTools();
+    mainWindow.webContents.once('did-finish-load', () => {
+      // Only open DevTools if explicitly requested, not automatically
+      // This prevents the Autofill protocol errors
+      if (process.env.OPEN_DEVTOOLS === 'true') {
+        mainWindow?.webContents.openDevTools({ mode: 'detach' });
+      }
+    });
   }
 
   // Save window state on resize/move

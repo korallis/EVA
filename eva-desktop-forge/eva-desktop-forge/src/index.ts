@@ -34,6 +34,25 @@ interface AuthData {
 let currentAuthData: AuthData | null = null;
 
 const createWindow = (): void => {
+  // Configure session-level CSP for Electron (proper way)
+  const { session } = require('electron');
+  
+  session.defaultSession.webRequest.onHeadersReceived((details: any, callback: any) => {
+    callback({
+      responseHeaders: {
+        ...details.responseHeaders,
+        'Content-Security-Policy': [
+          "default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob:; " +
+          "img-src 'self' data: blob: https: http: https://*.evetech.net https://images.evetech.net; " +
+          "connect-src 'self' https: wss: ws: https://*.evetech.net https://esi.evetech.net; " +
+          "script-src 'self' 'unsafe-inline' 'unsafe-eval'; " +
+          "style-src 'self' 'unsafe-inline' data:; " +
+          "font-src 'self' data:;"
+        ]
+      }
+    });
+  });
+
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     height: 900,
@@ -45,6 +64,8 @@ const createWindow = (): void => {
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
       nodeIntegration: false,
       contextIsolation: true,
+      webSecurity: true, // Keep security enabled, use session CSP instead
+      allowRunningInsecureContent: false,
     },
     icon: require('path').join(__dirname, '../assets/icons/icon.png'), // Proper icon path
   });

@@ -242,27 +242,14 @@ export class EsiService {
 
       console.log(`📚 Fetching skill queue for character ${characterId}...`);
       
-      // Try to get from cache first
-      const cachedQueue = await cacheService.get<SkillQueueItem[]>(
-        'character_skill_queue',
-        characterId.toString(),
-        undefined,
-        'CHARACTER_SKILL_QUEUE'
-      );
-
-      if (cachedQueue) {
-        console.log(`📚 Using cached skill queue data for character ${characterId}`);
-        return cachedQueue;
-      }
-      
-      // Use cache wrapper with shorter TTL for dynamic data
+      // Use cache wrapper with retry logic - this prevents duplicate fetches
       const queueData = await cacheService.cached(
         'character_skill_queue',
         characterId.toString(),
         () => this.makeEsiRequest(ESI_ENDPOINTS.CHARACTER_SKILL_QUEUE, characterId),
         undefined,
         'CHARACTER_SKILL_QUEUE',
-        [`character:${characterId}`, 'skills', 'queue']
+        [`character:${characterId}`, 'skillqueue']
       );
       
       console.log(`✅ Skill queue fetched: ${queueData.length} items`);
@@ -489,7 +476,7 @@ export class EsiService {
       const [skills, queue, attributes] = await Promise.allSettled([
         this.getCharacterSkills(characterId),
         this.getCharacterSkillQueue(characterId),
-        this.getCharacterAttributes(characterId).catch(() => null) // Attributes are optional
+        this.getCharacterAttributes(characterId).catch((): null => null) // Attributes are optional
       ]);
 
       const result: any = {};

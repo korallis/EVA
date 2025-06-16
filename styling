@@ -1,0 +1,246 @@
+EVA - Futuristic Holographic UI Style Guide (Updated with SVG Mockups)
+
+Overview
+This document outlines the complete design system for EVA's futuristic, transparent, holographic interface based on the reference design. The goal is to create a cohesive, animated, sci-fi interface that feels immersive and cutting-edge.
+Design Philosophy
+Holographic Transparency: All UI elements should appear to float in 3D space with glass-like transparency
+Futuristic Minimalism: Clean lines, geometric shapes, and purposeful negative space
+Dynamic Animation: Subtle animations that enhance the user experience without being distracting
+Consistent Visual Language: All components follow the same design principles and visual hierarchy
+Color Palette
+Primary Colors
+Cyan Blue: #00D4FF - Primary accent, borders, highlights
+Deep Cyan: #0099CC - Secondary accents, buttons
+Electric Blue: #0066FF - Active states, progress indicators
+Supporting Colors
+Teal: #00CCAA - Success states, positive indicators
+Orange: #FF7722 - Warning states, secondary accents
+White: #FFFFFF - Primary text, important content
+Light Gray: #CCCCCC - Secondary text, labels
+Background Colors
+Deep Space: #0A0A1A - Primary background
+Dark Blue: #1A1A2E - Secondary background
+Transparent Black: rgba(0, 0, 0, 0.3) - Panel backgrounds
+Transparent Cyan: rgba(0, 212, 255, 0.1) - Hover states
+Typography
+Font Stack
+css
+font-family: 'Orbitron', 'Exo 2', 'Rajdhani', 'Space Mono', monospace;
+Font Weights
+Light: 300 - Secondary text, labels
+Regular: 400 - Body text
+Medium: 500 - Subheadings
+Bold: 700 - Headers, important text
+Black: 900 - Main titles
+Font Sizes
+Hero: 32px - Main page titles
+H1: 24px - Section headers
+H2: 20px - Subsection headers
+H3: 16px - Component titles
+Body: 14px - Regular text
+Small: 12px - Labels, metadata
+Tiny: 10px - Fine print
+Glass Morphism Effects
+Standard Glass Panel
+css
+background: linear-gradient(135deg, 
+  rgba(0, 212, 255, 0.1) 0%, 
+  rgba(0, 0, 0, 0.2) 50%, 
+  rgba(159, 122, 234, 0.1) 100%);
+backdrop-filter: blur(20px) saturate(180%);
+border: 1px solid rgba(0, 212, 255, 0.3);
+border-radius: 12px;
+box-shadow: 
+  0 8px 32px rgba(0, 212, 255, 0.15),
+  inset 0 1px 0 rgba(255, 255, 255, 0.1);
+Interactive Glass Panel (Hover)
+css
+background: linear-gradient(135deg, 
+  rgba(0, 212, 255, 0.2) 0%, 
+  rgba(0, 0, 0, 0.3) 50%, 
+  rgba(159, 122, 234, 0.15) 100%);
+border-color: rgba(0, 212, 255, 0.5);
+box-shadow: 
+  0 12px 40px rgba(0, 212, 255, 0.25),
+  inset 0 1px 0 rgba(255, 255, 255, 0.2);
+SVG Mockups for Each Page
+1. Main Dashboard
+Description:
+Three-column layout featuring skill analysis, ship fitting with 3D holographic ship model, and ship statistics panels. All panels styled with transparent glassmorphism effects and glowing cyan borders.
+Main Dashboard SVG mockup in holographic EVE Online style
+Main Dashboard SVG mockup in holographic EVE Online style
+2. Ship Browser
+Description:
+Left panel contains faction and ship class filters with search functionality. Center displays ship grid with holographic ship cards. Right panel shows detailed ship preview with slot configuration and class information.
+Ship Browser SVG mockup in holographic EVE Online style
+Ship Browser SVG mockup in holographic EVE Online style
+3. Module Browser
+Description:
+Categories panel on left for filtering by slot type and meta level. Center shows module list with icons, names, and meta ratings. Right panel displays detailed module statistics and fitting actions.
+Module Browser SVG mockup in holographic EVE Online style
+Module Browser SVG mockup in holographic EVE Online style
+4. Fitting Recommendation
+Description:
+Similar layout to Main Dashboard but center panel shows recommended fit comparison and rationale. Multiple fits can be compared side-by-side with detailed analysis.
+Fitting Recommendation SVG mockup in holographic EVE Online style
+Fitting Recommendation SVG mockup in holographic EVE Online style
+5. Skill Planner
+Description:
+Left panel shows skill categories and training queue. Center features holographic skill tree with glowing connectors. Right panel displays projected ship and fitting unlocks based on skill plan.
+Skill Planner SVG mockup in holographic EVE Online style
+Skill Planner SVG mockup in holographic EVE Online style
+Component Design Specifications
+1. Skill Analysis Panel
+Circular Progress Indicators
+Design: Large circular progress rings with animated fills
+Animation: Smooth arc progression with glow effects
+Typography: Large numbers in center, percentage below
+Colors: Cyan gradient fill with white text
+Skill Categories List
+Design: Horizontal bars with progress indicators
+Layout: Category name on left, level/points on right
+Animation: Bars fill on load with staggered timing
+Hover Effect: Subtle glow and scale increase
+2. Ship Fitting Panel
+3D Ship Model Area
+Background: Transparent panel with subtle grid pattern
+Ship Model: Wireframe or holographic representation
+Rotation: Slow, continuous rotation animation
+Interaction: Click and drag to rotate manually
+Module Slots
+High Slots: Top arc arrangement
+Medium Slots: Right side vertical
+Low Slots: Bottom arc arrangement
+Design: Circular slots with module icons
+States: Empty (outlined), Filled (glowing), Active (pulsing)
+Module Lists
+Layout: Categorized lists with search/filter
+Items: Icon + name + stats in cards
+Interaction: Drag and drop to slots
+Animation: Hover effects and smooth transitions
+3. Navigation and Controls
+Top Navigation
+text
+EVE [Logo]     [Search Bar]     [User Profile] [Settings] [Minimize] [Close]
+Tab System
+Design: Holographic tab buttons
+Active State: Glowing border and background
+Inactive State: Semi-transparent with subtle border
+Animation: Smooth transitions between tabs
+Animation Specifications
+1. Page Load Animations
+css
+@keyframes materialIn {
+  0% {
+    opacity: 0;
+    transform: translateY(50px) scale(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+2. Hover Animations
+css
+@keyframes glowPulse {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(0, 212, 255, 0.6);
+  }
+}
+3. Progress Animations
+css
+@keyframes progressFill {
+  0% {
+    stroke-dasharray: 0 628;
+  }
+  100% {
+    stroke-dasharray: var(--progress) 628;
+  }
+}
+4. Floating Animations
+css
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+Interactive States
+Button States
+Default: Semi-transparent with cyan border
+Hover: Increased opacity, glowing border
+Active: Full opacity, strong glow, slight scale
+Disabled: Reduced opacity, no interactions
+Form Elements
+Input Fields: Glass morphism with cyan focus border
+Dropdowns: Animated slide-down with blur background
+Checkboxes: Custom holographic checkmarks
+Sliders: Glowing track with animated handle
+Responsive Design
+Breakpoints
+Desktop: 1200px+ (Primary design)
+Tablet: 768px - 1199px (Adapted layout)
+Mobile: < 768px (Stacked panels)
+Mobile Adaptations
+Single column layout
+Collapsible panels
+Touch-friendly controls
+Simplified animations
+Implementation Strategy
+Phase 1: Core Design System
+Set up CSS custom properties for colors and spacing
+Create base glassmorphism mixins and utilities
+Implement typography system
+Build animation library
+Phase 2: Component Library
+Basic UI components (buttons, inputs, cards)
+Navigation components
+Data visualization components
+Interactive components
+Phase 3: Layout Implementation
+Main container structure
+Skill analysis panel
+Ship fitting panel
+Responsive adaptations
+Phase 4: Animation Integration
+Page transitions
+Component animations
+Micro-interactions
+Performance optimization
+How to Implement the Look
+Use the Main Dashboard mockup as the definitive reference for all panel shapes, colors, fonts, and effects
+For every new page, adapt the layout to the content, but always use:
+Transparent, glassy panels with glowing cyan borders
+White and cyan text in sci-fi fonts
+Consistent panel spacing, rounded corners, and drop shadows
+Animated progress and hover effects
+All mockups now provided as high-fidelity SVG references for precise implementation
+Example CSS Snippet
+css
+.panel {
+  background: linear-gradient(135deg, rgba(0,212,255,0.1) 0%, rgba(0,0,0,0.2) 50%, rgba(159,122,234,0.1) 100%);
+  backdrop-filter: blur(20px) saturate(180%);
+  border: 2px solid #00D4FF;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0,212,255,0.15), inset 0 1px 0 rgba(255,255,255,0.1);
+  color: #fff;
+  font-family: 'Orbitron', 'Exo 2', 'Rajdhani', 'Space Mono', monospace;
+}
+.panel-header {
+  color: #00D4FF;
+  font-size: 24px;
+  font-weight: 700;
+  text-align: center;
+  text-shadow: 0 0 8px #00D4FF;
+}
+Animation Guidance
+Panel fade-in: Panels animate in with opacity and upward motion
+Glowing hover: Borders and shadows intensify on hover
+Progress rings: Animate from 0 to value on load
+3D ship model: Subtle rotation and floating animation
+This guide ensures every page and component in your app will have a unified, professional, and futuristic EVE Online-inspired look. All SVG mockups are now provided for precise visual reference during implementation.

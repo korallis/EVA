@@ -371,7 +371,7 @@ class SDEService {
       FROM inv_types t
       LEFT JOIN groups g ON t.groupID = g.groupID
       LEFT JOIN categories c ON t.categoryID = c.categoryID
-      WHERE t.categoryID = 6 AND t.published = 1
+      WHERE t.categoryID = 6
       ORDER BY t.groupID, t.typeName
     `);
 
@@ -401,7 +401,7 @@ class SDEService {
       LEFT JOIN categories c ON t.categoryID = c.categoryID
       LEFT JOIN type_attributes ta_meta ON t.typeID = ta_meta.typeID AND ta_meta.attributeID = 633
       LEFT JOIN type_attributes ta_tech ON t.typeID = ta_tech.typeID AND ta_tech.attributeID = 422
-      WHERE t.categoryID IN (7, 8, 18, 32) AND t.published = 1
+      WHERE t.categoryID IN (7, 8, 18, 32)
       ORDER BY t.groupID, t.typeName
     `);
 
@@ -512,6 +512,12 @@ class SDEService {
         }
       });
     });
+  }
+
+  // Helper method for getting categoryID from groupID
+  async getCategoryIDFromGroupID(groupID: number): Promise<number | null> {
+    const result = await this.getQuery('SELECT categoryID FROM groups WHERE groupID = ?', [groupID]);
+    return result ? result.categoryID : null;
   }
 
   async close(): Promise<void> {

@@ -25,7 +25,8 @@ interface SDETypeData {
 interface SDEGroupData {
   groupID: number;
   categoryID: number;
-  groupName: any;
+  name: any; // Multi-language name object
+  groupName?: any; // Legacy field
   published?: boolean;
   anchorable?: boolean;
   anchored?: boolean;
@@ -239,7 +240,7 @@ export class ComprehensiveSDEImporter {
       const groups = Object.entries(groupsData).map(([id, data]) => ({
         groupID: parseInt(id),
         categoryID: data.categoryID,
-        groupName: this.extractEnglishName(data.groupName),
+        groupName: this.extractEnglishName(data.name),
         published: data.published || false,
         anchorable: data.anchorable || false,
         anchored: data.anchored || false,
@@ -629,10 +630,10 @@ export class ComprehensiveSDEImporter {
 
     // Query database for categoryID
     try {
-      const result = await sdeService.getQuery('SELECT categoryID FROM groups WHERE groupID = ?', [groupID]);
-      if (result) {
-        this.groupToCategoryMap.set(groupID, result.categoryID);
-        return result.categoryID;
+      const categoryID = await sdeService.getCategoryIDFromGroupID(groupID);
+      if (categoryID) {
+        this.groupToCategoryMap.set(groupID, categoryID);
+        return categoryID;
       }
     } catch (error) {
       console.warn(`⚠️ Could not find categoryID for groupID ${groupID}:`, error);

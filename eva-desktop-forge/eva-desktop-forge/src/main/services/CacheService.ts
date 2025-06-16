@@ -129,12 +129,13 @@ export class CacheService {
     const key = this.generateKey(namespace, identifier, params);
     
     // Check memory cache first
-    const memoryEntry = this.memoryCache.get(key);
-    if (memoryEntry && this.isValid(memoryEntry)) {
-      this.stats.hits++;
-      console.log(`🎯 Cache HIT (memory): ${key}`);
-      return memoryEntry.data as T;
-    }
+    const memoryEntry = this.memoryCache.get(key);      if (memoryEntry && this.isValid(memoryEntry)) {
+        this.stats.hits++;
+        if (process.env.NODE_ENV === 'development') {
+          console.log(`🎯 Cache HIT (memory): ${key}`);
+        }
+        return memoryEntry.data as T;
+      }
 
     // Check disk cache for persistent data
     if (this.shouldPersist(cacheType)) {
@@ -143,13 +144,18 @@ export class CacheService {
         // Promote to memory cache
         this.memoryCache.set(key, diskEntry);
         this.stats.hits++;
-        console.log(`🎯 Cache HIT (disk): ${key}`);
+        if (process.env.NODE_ENV === 'development') {
+          console.log(`🎯 Cache HIT (disk): ${key}`);
+        }
         return diskEntry.data;
       }
     }
 
     this.stats.misses++;
-    console.log(`❌ Cache MISS: ${key}`);
+    // Only log cache misses in debug mode to reduce console noise
+    if (process.env.NODE_ENV === 'development') {
+      console.log(`❌ Cache MISS: ${key}`);
+    }
     return null;
   }
 
@@ -187,7 +193,9 @@ export class CacheService {
       await this.setDiskEntry(key, entry);
     }
 
-    console.log(`💾 Cache SET: ${key} (TTL: ${Math.round(ttl / 1000 / 60)}min)`);
+    if (process.env.NODE_ENV === 'development') {
+      console.log(`💾 Cache SET: ${key} (TTL: ${Math.round(ttl / 1000 / 60)}min)`);
+    }
   }
 
   // Determine if cache type should be persisted to disk
@@ -416,13 +424,13 @@ export class CacheService {
     // Fetch fresh data
     const data = await fetchFunction();
     
-    // Store in cache
+    // Store in cache  
     await this.set(namespace, identifier, data, params, cacheType, tags);
     
     return data;
   }
 
-  // Preload common data
+  // Improved preload with character-specific data
   async preloadData(): Promise<void> {
     const settings = settingsService.getCachingSettings();
     
@@ -433,11 +441,25 @@ export class CacheService {
     console.log('🚀 Preloading common cache data...');
     
     try {
-      // This would be implemented to preload frequently accessed data
-      // like skill types, common universe data, etc.
+      // Import here to avoid circular dependency
+      const { characterService } = await import('./CharacterService');
+      
+      // Preload active character's basic data
+      const activeCharacter = await characterService.getActiveCharacter();
+      if (activeCharacter) {
+        // Pre-warm the cache for character skill queue
+        const { esiService } = await import('./EsiService');
+        try {
+          await esiService.getCharacterSkillQueue(activeCharacter.character_id);
+        } catch (error) {
+          // Ignore preload errors - cache will be populated on first request
+        }
+      }
+      
       console.log('✅ Cache preload completed');
     } catch (error) {
-      console.warn('⚠️ Cache preload failed:', error);
+      // Preload failures shouldn't block app startup
+      console.log('⚠️ Cache preload completed with some errors (non-critical)');
     }
   }
 }

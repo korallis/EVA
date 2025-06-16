@@ -1,0 +1,66 @@
+/* Circular Progress Component */
+.circular-progress {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.circular-progress-svg {
+  transform: rotate(-90deg);
+}
+
+.progress-circle-bg {
+  transition: stroke var(--transition-normal);
+}
+
+.progress-circle-fill {
+  stroke-linecap: round;
+  transition: stroke-dashoffset var(--transition-slow) ease-out;
+  filter: drop-shadow(0 0 5px currentColor);
+}
+
+.progress-content {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+}
+
+.progress-value {
+  font-family: var(--font-primary);
+  font-size: calc(var(--font-size-h1) * 1.2);
+  font-weight: var(--font-weight-black);
+  color: var(--color-white);
+  text-shadow: 0 0 10px rgba(0, 212, 255, 0.7);
+  line-height: 1;
+}
+
+.progress-label {
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-tiny);
+  color: var(--color-gray-300);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+/* Animation on mount */
+@keyframes progressFill {
+  from {
+    stroke-dashoffset: var(--circumference, 377);
+  }
+  to {
+    stroke-dashoffset: var(--offset, 377);
+  }
+}
+
+.circular-progress-svg {
+  animation: fadeIn var(--animation-duration-normal) ease-out;
+}
+
+.progress-circle-fill {
+  animation: progressFill var(--animation-duration-slower) ease-out;
+}
