@@ -150,3 +150,21 @@ app-log.txt
 *.log.txt
 error.log
 debug.log
+
+# Development and Debug Files (exclude from git)
+eva-desktop-forge/
+mcp-servers/
+*.md
+!README.md
+design.md
+styling
+*.png
+*.svg
+--help
+.claude/
+*_ROADMAP.md
+*_FIXES.md
+
+# Electron Forge specific
+.webpack/
+webpack.*.config.ts.license.txt

@@ -1,0 +1,21 @@
+generatorName: typescript-axios
+inputSpec: ./esi-swagger.json
+outputDir: src/generated/esi-client
+additionalProperties:
+  npmName: "@eva/esi-client"
+  npmVersion: "1.0.0"
+  typescriptThreePlus: true
+  supportsES6: true
+  withInterfaces: true
+  modelPropertyNaming: snake_case
+  apiPackage: api
+  modelPackage: models
+  withSeparateModelsAndApi: true
+  stringEnums: true
+  useSingleRequestParameter: false
+  enumNameSuffix: Enum
+  removeOperationIdPrefix: true
+globalProperties:
+  models: ""
+  apis: ""
+  supportingFiles: ""

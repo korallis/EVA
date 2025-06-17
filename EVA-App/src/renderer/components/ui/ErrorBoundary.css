@@ -1,0 +1,151 @@
+/**
+ * EVA Desktop Error Boundary Styles
+ * 
+ * Provides clean, user-friendly error display that matches
+ * the EVE Online holographic aesthetic.
+ */
+
+.error-boundary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  padding: 2rem;
+  background: rgba(0, 0, 0, 0.8);
+  border: 1px solid rgba(255, 165, 0, 0.3);
+  border-radius: 8px;
+  margin: 1rem;
+}
+
+.error-boundary-content {
+  text-align: center;
+  max-width: 500px;
+  color: #fff;
+}
+
+.error-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  filter: drop-shadow(0 0 10px rgba(255, 165, 0, 0.8));
+}
+
+.error-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #ff6b35;
+  text-shadow: 0 0 5px rgba(255, 107, 53, 0.5);
+}
+
+.error-message {
+  font-size: 1rem;
+  line-height: 1.5;
+  margin-bottom: 2rem;
+  opacity: 0.9;
+}
+
+.error-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.error-retry-btn,
+.error-reload-btn {
+  padding: 0.75rem 1.5rem;
+  border: 1px solid rgba(255, 165, 0, 0.5);
+  background: rgba(255, 165, 0, 0.1);
+  color: #ffa500;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.error-retry-btn:hover,
+.error-reload-btn:hover {
+  background: rgba(255, 165, 0, 0.2);
+  border-color: rgba(255, 165, 0, 0.8);
+  box-shadow: 0 0 10px rgba(255, 165, 0, 0.3);
+}
+
+.error-retry-btn:active,
+.error-reload-btn:active {
+  transform: translateY(1px);
+}
+
+.error-details {
+  margin-top: 2rem;
+  text-align: left;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.error-details summary {
+  padding: 0.75rem;
+  cursor: pointer;
+  font-weight: 500;
+  color: #ffa500;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.error-details summary:hover {
+  background: rgba(255, 165, 0, 0.1);
+}
+
+.error-stack,
+.error-component-stack {
+  padding: 1rem;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.8rem;
+  line-height: 1.4;
+  overflow-x: auto;
+  background: rgba(0, 0, 0, 0.3);
+  color: #ccc;
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+.error-component-stack {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin-top: 0.5rem;
+  padding-top: 1rem;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .error-boundary {
+    padding: 1rem;
+    margin: 0.5rem;
+  }
+  
+  .error-actions {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .error-retry-btn,
+  .error-reload-btn {
+    width: 100%;
+    max-width: 200px;
+  }
+}
+
+/* Animation for error appearance */
+@keyframes errorFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.error-boundary-content {
+  animation: errorFadeIn 0.5s ease-out;
+} 

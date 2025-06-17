@@ -1,0 +1,84 @@
+{
+  "env": {
+    "browser": true,
+    "es6": true,
+    "node": true
+  },
+  "extends": [
+    "@typescript-eslint/recommended"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "plugins": [
+    "@typescript-eslint",
+    "import"
+  ],
+  "rules": {
+    // Performance-focused rules
+    "prefer-const": "error",
+    "no-var": "error",
+    "no-console": ["warn", { 
+      "allow": ["warn", "error"] 
+    }],
+    
+    // EVA-specific logging patterns
+    "@typescript-eslint/no-explicit-any": "warn",
+    "@typescript-eslint/explicit-function-return-type": "off",
+    "@typescript-eslint/no-unused-vars": ["error", { 
+      "argsIgnorePattern": "^_",
+      "varsIgnorePattern": "^_" 
+    }],
+    
+    // Import organization
+    "import/order": ["error", {
+      "groups": [
+        "builtin",
+        "external", 
+        "internal",
+        "parent",
+        "sibling",
+        "index"
+      ],
+      "newlines-between": "always",
+      "alphabetize": {
+        "order": "asc",
+        "caseInsensitive": true
+      }
+    }],
+    
+    // React performance rules
+    "react-hooks/exhaustive-deps": "warn",
+    "react-hooks/rules-of-hooks": "error",
+    
+    // Code quality
+    "prefer-template": "error",
+    "object-shorthand": "error",
+    "no-duplicate-imports": "error",
+    "no-useless-rename": "error",
+    
+    // EVA coding standards
+    "max-len": ["warn", { 
+      "code": 120,
+      "ignoreUrls": true,
+      "ignoreStrings": true,
+      "ignoreTemplateLiterals": true
+    }],
+    "complexity": ["warn", 10],
+    "max-depth": ["warn", 4]
+  },
+  "overrides": [
+    {
+      "files": ["*.tsx"],
+      "plugins": ["react-hooks"],
+      "rules": {
+        "react-hooks/exhaustive-deps": "warn",
+        "react-hooks/rules-of-hooks": "error"
+      }
+    },
+    {
+      "files": ["src/utils/logger.ts", "src/utils/errorHandler.ts"],
+      "rules": {
+        "no-console": "off"
+      }
+    }
+  ]
+}
