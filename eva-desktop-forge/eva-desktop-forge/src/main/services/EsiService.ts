@@ -33,6 +33,59 @@ export interface SkillTypeInfo {
   };
 }
 
+export interface CharacterLocation {
+  solar_system_id: number;
+  station_id?: number;
+  structure_id?: number;
+}
+
+export interface CharacterShip {
+  ship_type_id: number;
+  ship_item_id: number;
+  ship_name: string;
+}
+
+export interface CharacterWallet {
+  balance: number;
+}
+
+export interface CorporationInfo {
+  alliance_id?: number;
+  ceo_id: number;
+  creator_id: number;
+  date_founded?: string;
+  description?: string;
+  faction_id?: number;
+  home_station_id?: number;
+  member_count: number;
+  name: string;
+  shares?: number;
+  tax_rate: number;
+  ticker: string;
+  url?: string;
+  war_eligible?: boolean;
+}
+
+export interface CharacterClones {
+  home_location?: {
+    location_id: number;
+    location_type: string;
+  };
+  jump_clones: Array<{
+    clone_id: number;
+    implants: number[];
+    location_id: number;
+    location_type: string;
+    name?: string;
+  }>;
+  last_clone_jump_date?: string;
+  last_station_change_date?: string;
+}
+
+export interface CharacterImplants {
+  implants: number[];
+}
+
 export class EsiService {
   private baseUrl = ESI_CONFIG.ESI_BASE_URL;
   private userAgent = ESI_CONFIG.USER_AGENT;
@@ -504,6 +557,409 @@ export class EsiService {
     } catch (error) {
       console.error('❌ Failed to refresh character data:', error);
       throw error;
+    }
+  }
+
+  // Get character location
+  async getCharacterLocation(characterId?: number): Promise<CharacterLocation> {
+    try {
+      if (!characterId) {
+        const authData = await authService.getCharacterData();
+        if (!authData) {
+          throw new Error('No authenticated character available');
+        }
+        characterId = authData.character_id;
+      }
+
+      console.log(`📍 Fetching location for character ${characterId}...`);
+      
+      const locationData = await cacheService.cached(
+        'character_location',
+        characterId.toString(),
+        () => this.makeEsiRequest(ESI_ENDPOINTS.CHARACTER_LOCATION, characterId),
+        60000, // Cache for 1 minute (location changes frequently)
+        'CHARACTER_LOCATION',
+        [`character:${characterId}`, 'location']
+      );
+      
+      console.log(`✅ Location fetched: system ${locationData.solar_system_id}`);
+      return locationData;
+    } catch (error) {
+      console.error('❌ Failed to fetch character location:', error);
+      throw error;
+    }
+  }
+
+  // Get character current ship
+  async getCharacterShip(characterId?: number): Promise<CharacterShip> {
+    try {
+      if (!characterId) {
+        const authData = await authService.getCharacterData();
+        if (!authData) {
+          throw new Error('No authenticated character available');
+        }
+        characterId = authData.character_id;
+      }
+
+      console.log(`🚀 Fetching ship for character ${characterId}...`);
+      
+      const shipData = await cacheService.cached(
+        'character_ship',
+        characterId.toString(),
+        () => this.makeEsiRequest(ESI_ENDPOINTS.CHARACTER_SHIP, characterId),
+        300000, // Cache for 5 minutes
+        'CHARACTER_SHIP',
+        [`character:${characterId}`, 'ship']
+      );
+      
+      console.log(`✅ Ship fetched: ${shipData.ship_name} (type ${shipData.ship_type_id})`);
+      return shipData;
+    } catch (error) {
+      console.error('❌ Failed to fetch character ship:', error);
+      throw error;
+    }
+  }
+
+  // Get character wallet balance
+  async getCharacterWallet(characterId?: number): Promise<number> {
+    try {
+      if (!characterId) {
+        const authData = await authService.getCharacterData();
+        if (!authData) {
+          throw new Error('No authenticated character available');
+        }
+        characterId = authData.character_id;
+      }
+
+      console.log(`💰 Fetching wallet for character ${characterId}...`);
+      
+      const walletBalance = await cacheService.cached(
+        'character_wallet',
+        characterId.toString(),
+        () => this.makeEsiRequest(ESI_ENDPOINTS.CHARACTER_WALLET, characterId),
+        300000, // Cache for 5 minutes
+        'CHARACTER_WALLET',
+        [`character:${characterId}`, 'wallet']
+      );
+      
+      console.log(`✅ Wallet balance: ${walletBalance.toLocaleString()} ISK`);
+      return walletBalance;
+    } catch (error) {
+      console.error('❌ Failed to fetch character wallet:', error);
+      throw error;
+    }
+  }
+
+  // Get corporation information
+  async getCorporationInfo(corporationId: number): Promise<CorporationInfo> {
+    try {
+      console.log(`🏢 Fetching corporation info for ${corporationId}...`);
+      
+      const corpData = await cacheService.cached(
+        'corporation_info',
+        corporationId.toString(),
+        async () => {
+          const endpoint = ESI_ENDPOINTS.CORPORATION_INFO.replace('{corporation_id}', corporationId.toString());
+          return this.makePublicEsiRequest(endpoint);
+        },
+        3600000, // Cache for 1 hour
+        'CORPORATION_INFO',
+        [`corporation:${corporationId}`, 'corp_info']
+      );
+      
+      console.log(`✅ Corporation info fetched: ${corpData.name} [${corpData.ticker}]`);
+      return corpData;
+    } catch (error) {
+      console.error('❌ Failed to fetch corporation info:', error);
+      throw error;
+    }
+  }
+
+  // Get character corporation history
+  async getCharacterCorporationHistory(characterId?: number): Promise<any[]> {
+    try {
+      if (!characterId) {
+        const authData = await authService.getCharacterData();
+        if (!authData) {
+          throw new Error('No authenticated character available');
+        }
+        characterId = authData.character_id;
+      }
+
+      console.log(`📜 Fetching corporation history for character ${characterId}...`);
+      
+      const corpHistory = await cacheService.cached(
+        'character_corp_history',
+        characterId.toString(),
+        () => this.makeEsiRequest(ESI_ENDPOINTS.CHARACTER_CORPORATION_HISTORY, characterId),
+        3600000, // Cache for 1 hour
+        'CHARACTER_CORPORATION_HISTORY',
+        [`character:${characterId}`, 'corp_history']
+      );
+      
+      console.log(`✅ Corporation history fetched: ${corpHistory.length} entries`);
+      return corpHistory;
+    } catch (error) {
+      console.error('❌ Failed to fetch corporation history:', error);
+      throw error;
+    }
+  }
+
+  // Get character clones
+  async getCharacterClones(characterId?: number): Promise<CharacterClones> {
+    try {
+      if (!characterId) {
+        const authData = await authService.getCharacterData();
+        if (!authData) {
+          throw new Error('No authenticated character available');
+        }
+        characterId = authData.character_id;
+      }
+
+      console.log(`🧬 Fetching clones for character ${characterId}...`);
+      
+      const clonesData = await cacheService.cached(
+        'character_clones',
+        characterId.toString(),
+        () => this.makeEsiRequest(ESI_ENDPOINTS.CHARACTER_CLONES, characterId),
+        3600000, // Cache for 1 hour
+        'CHARACTER_CLONES',
+        [`character:${characterId}`, 'clones']
+      );
+      
+      console.log(`✅ Clones fetched: ${clonesData.jump_clones?.length || 0} jump clones`);
+      return clonesData;
+    } catch (error) {
+      console.error('❌ Failed to fetch character clones:', error);
+      throw error;
+    }
+  }
+
+  // Get character implants
+  async getCharacterImplants(characterId?: number): Promise<number[]> {
+    try {
+      if (!characterId) {
+        const authData = await authService.getCharacterData();
+        if (!authData) {
+          throw new Error('No authenticated character available');
+        }
+        characterId = authData.character_id;
+      }
+
+      console.log(`🧠 Fetching implants for character ${characterId}...`);
+      
+      const implants = await cacheService.cached(
+        'character_implants',
+        characterId.toString(),
+        () => this.makeEsiRequest(ESI_ENDPOINTS.CHARACTER_IMPLANTS, characterId),
+        3600000, // Cache for 1 hour
+        'CHARACTER_IMPLANTS',
+        [`character:${characterId}`, 'implants']
+      );
+      
+      console.log(`✅ Implants fetched: ${implants.length} implants`);
+      return implants;
+    } catch (error) {
+      console.error('❌ Failed to fetch character implants:', error);
+      throw error;
+    }
+  }
+
+  // Get universe system info
+  async getSystemInfo(systemId: number): Promise<any> {
+    try {
+      console.log(`🌌 Fetching system info for ${systemId}...`);
+      
+      const systemData = await cacheService.cached(
+        'universe_system',
+        systemId.toString(),
+        async () => {
+          const endpoint = ESI_ENDPOINTS.UNIVERSE_SYSTEMS.replace('{system_id}', systemId.toString());
+          return this.makePublicEsiRequest(endpoint);
+        },
+        86400000, // Cache for 24 hours
+        'UNIVERSE_SYSTEMS',
+        [`system:${systemId}`, 'universe_data']
+      );
+      
+      console.log(`✅ System info fetched: ${systemData.name}`);
+      return systemData;
+    } catch (error) {
+      console.error('❌ Failed to fetch system info:', error);
+      throw error;
+    }
+  }
+
+  // Get universe station info
+  async getStationInfo(stationId: number): Promise<any> {
+    try {
+      console.log(`🏢 Fetching station info for ${stationId}...`);
+      
+      const stationData = await cacheService.cached(
+        'universe_station',
+        stationId.toString(),
+        async () => {
+          const endpoint = ESI_ENDPOINTS.UNIVERSE_STATIONS.replace('{station_id}', stationId.toString());
+          return this.makePublicEsiRequest(endpoint);
+        },
+        86400000, // Cache for 24 hours
+        'UNIVERSE_STATIONS',
+        [`station:${stationId}`, 'universe_data']
+      );
+      
+      console.log(`✅ Station info fetched: ${stationData.name}`);
+      return stationData;
+    } catch (error) {
+      console.error('❌ Failed to fetch station info:', error);
+      throw error;
+    }
+  }
+
+  // Get implant slot from type ID (basic mapping)
+  private getImplantSlot(typeId: number): number {
+    // Basic implant slot mapping based on type ID ranges
+    // This is a simplified version - in production you'd use SDE data
+    if (typeId >= 9899 && typeId <= 9906) return typeId - 9898; // Basic implants slots 1-8
+    if (typeId >= 10207 && typeId <= 10214) return typeId - 10206; // +3 implants slots 1-8
+    if (typeId >= 10215 && typeId <= 10222) return typeId - 10214; // +4 implants slots 1-8
+    if (typeId >= 10223 && typeId <= 10230) return typeId - 10222; // +5 implants slots 1-8
+    return 0; // Unknown slot
+  }
+
+  // Get character blueprints
+  async getCharacterBlueprints(characterId?: number): Promise<CharacterBlueprint[]> {
+    try {
+      if (!characterId) {
+        const authData = await authService.getCharacterData();
+        if (!authData) {
+          throw new Error('No authenticated character available');
+        }
+        characterId = authData.character_id;
+      }
+
+      console.log(`📜 Fetching blueprints for character ${characterId}...`);
+      
+      const blueprints = await cacheService.cached(
+        'character_blueprints',
+        characterId.toString(),
+        () => this.makeEsiRequest(ESI_ENDPOINTS.CHARACTER_BLUEPRINTS, characterId),
+        3600000, // Cache for 1 hour
+        'DEFAULT',
+        [`character:${characterId}`, 'blueprints']
+      );
+      
+      // Process blueprints to add derived fields
+      const processedBlueprints: CharacterBlueprint[] = blueprints.map((bp: any) => ({
+        item_id: bp.item_id,
+        type_id: bp.type_id,
+        location_id: bp.location_id,
+        location_flag: bp.location_flag || 'Hangar',
+        quantity: bp.quantity,
+        time_efficiency: bp.time_efficiency,
+        material_efficiency: bp.material_efficiency,
+        runs: bp.runs > 0 ? bp.runs : undefined,
+        is_copy: bp.quantity > 0, // BPCs have positive quantity, BPOs have -1
+        type_name: `Blueprint ${bp.type_id}` // Will be resolved from SDE
+      }));
+      
+      console.log(`✅ Blueprints fetched: ${processedBlueprints.length} blueprints (${processedBlueprints.filter(bp => !bp.is_copy).length} BPOs, ${processedBlueprints.filter(bp => bp.is_copy).length} BPCs)`);
+      return processedBlueprints;
+    } catch (error) {
+      console.error('❌ Failed to fetch character blueprints:', error);
+      return [];
+    }
+  }
+
+  // Get enhanced character clones with location resolution
+  async getEnhancedCharacterClones(characterId?: number): Promise<EnhancedCharacterClones> {
+    try {
+      if (!characterId) {
+        const authData = await authService.getCharacterData();
+        if (!authData) {
+          throw new Error('No authenticated character available');
+        }
+        characterId = authData.character_id;
+      }
+
+      console.log(`🧬 Fetching enhanced clones for character ${characterId}...`);
+      
+      const clonesData = await cacheService.cached(
+        'character_clones_enhanced',
+        characterId.toString(),
+        async () => {
+          const clones = await this.makeEsiRequest(ESI_ENDPOINTS.CHARACTER_CLONES, characterId);
+          
+          // Enhance with location names
+          const enhanced: EnhancedCharacterClones = {
+            ...clones,
+            neural_remaps: {
+              // Note: Neural remaps data is not available in current ESI
+              // This would need to be fetched from character sheet or estimated
+            },
+            jump_clones: []
+          };
+          
+          // Resolve home location name
+          if (clones.home_location) {
+            try {
+              let locationName = 'Unknown Location';
+              if (clones.home_location.location_type === 'station') {
+                const stationInfo = await this.getStationInfo(clones.home_location.location_id);
+                locationName = stationInfo.name;
+              } else if (clones.home_location.location_type === 'structure') {
+                // Structure names require special permissions
+                locationName = `Structure ${clones.home_location.location_id}`;
+              }
+              enhanced.home_location = {
+                ...clones.home_location,
+                location_name: locationName
+              };
+            } catch (error) {
+              console.warn('Failed to resolve home location name:', error);
+              enhanced.home_location = clones.home_location;
+            }
+          }
+          
+          // Resolve jump clone locations and implant names
+          if (clones.jump_clones && clones.jump_clones.length > 0) {
+            enhanced.jump_clones = await Promise.all(
+              clones.jump_clones.map(async (clone: any) => {
+                let locationName = 'Unknown Location';
+                try {
+                  if (clone.location_type === 'station') {
+                    const stationInfo = await this.getStationInfo(clone.location_id);
+                    locationName = stationInfo.name;
+                  } else if (clone.location_type === 'structure') {
+                    locationName = `Structure ${clone.location_id}`;
+                  }
+                } catch (error) {
+                  console.warn(`Failed to resolve location ${clone.location_id}:`, error);
+                }
+                
+                return {
+                  ...clone,
+                  location_name: locationName,
+                  implant_names: clone.implants.map((id: number) => `Implant ${id}`)
+                };
+              })
+            );
+          }
+          
+          return enhanced;
+        },
+        3600000, // Cache for 1 hour
+        'DEFAULT',
+        [`character:${characterId}`, 'clones_enhanced']
+      );
+      
+      console.log(`✅ Enhanced clones fetched: ${clonesData.jump_clones?.length || 0} jump clones`);
+      return clonesData;
+    } catch (error) {
+      console.error('❌ Failed to fetch enhanced character clones:', error);
+      return {
+        jump_clones: [],
+        neural_remaps: {}
+      };
     }
   }
 }

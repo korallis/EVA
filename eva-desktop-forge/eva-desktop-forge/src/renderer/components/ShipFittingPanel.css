@@ -1,0 +1,437 @@
+/* ============================================================================
+   Ship Fitting Panel
+   Center panel with 3D ship display and module slots
+   ============================================================================ */
+
+.ship-fitting-panel {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.ship-fitting-panel .panel-header {
+  padding: var(--space-lg);
+  border-bottom: 1px solid var(--glass-border);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.ship-selector {
+  display: flex;
+  justify-content: center;
+}
+
+.ship-dropdown {
+  min-width: 250px;
+  text-align: center;
+}
+
+.panel-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ============================================================================
+   3D Ship Display Area
+   ============================================================================ */
+
+.ship-display-area {
+  flex: 1;
+  min-height: 300px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(45deg, 
+    rgba(0, 0, 0, 0.8) 0%, 
+    rgba(0, 20, 40, 0.4) 50%, 
+    rgba(0, 0, 0, 0.8) 100%);
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.holographic-ship {
+  position: relative;
+  width: 80%;
+  height: 80%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  animation: float 6s ease-in-out infinite;
+}
+
+.ship-wireframe {
+  position: relative;
+  width: 300px;
+  height: 180px;
+  margin-bottom: var(--space-lg);
+}
+
+.ship-hull {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 250px;
+  height: 120px;
+}
+
+.hull-outline {
+  width: 100%;
+  height: 100%;
+  border: 2px solid var(--primary-cyan);
+  border-radius: 50px 20px 50px 20px;
+  background: linear-gradient(45deg, 
+    transparent 0%, 
+    rgba(0, 212, 255, 0.1) 50%, 
+    transparent 100%);
+  position: relative;
+  box-shadow: 
+    0 0 20px rgba(0, 212, 255, 0.3),
+    inset 0 0 20px rgba(0, 212, 255, 0.1);
+  animation: glowPulse 3s ease-in-out infinite;
+}
+
+.hull-outline::before,
+.hull-outline::after {
+  content: '';
+  position: absolute;
+  background: var(--primary-cyan);
+  border-radius: 50%;
+}
+
+.hull-outline::before {
+  width: 8px;
+  height: 8px;
+  top: 20%;
+  left: 30%;
+  box-shadow: 0 0 10px var(--primary-cyan);
+  animation: glowPulse 2s ease-in-out infinite;
+}
+
+.hull-outline::after {
+  width: 6px;
+  height: 6px;
+  top: 60%;
+  right: 25%;
+  box-shadow: 0 0 8px var(--primary-cyan);
+  animation: glowPulse 2.5s ease-in-out infinite;
+}
+
+.hull-details {
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 60%;
+  height: 2px;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    var(--primary-cyan) 50%, 
+    transparent 100%);
+  box-shadow: 0 0 10px var(--primary-cyan);
+}
+
+.ship-grid {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+.grid-line {
+  position: absolute;
+  background: var(--primary-cyan);
+  opacity: 0.2;
+}
+
+.grid-line.horizontal {
+  width: 100%;
+  height: 1px;
+}
+
+.grid-line.vertical {
+  width: 1px;
+  height: 100%;
+}
+
+.scan-beam {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    var(--accent-teal) 50%, 
+    transparent 100%);
+  animation: scanBeam 2s linear;
+  box-shadow: 0 0 20px var(--accent-teal);
+}
+
+@keyframes scanBeam {
+  0% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(180px);
+    opacity: 0;
+  }
+}
+
+.holographic-ship.scanning .hull-outline {
+  animation: scanningGlow 2s ease-in-out;
+}
+
+@keyframes scanningGlow {
+  0%, 100% {
+    box-shadow: 
+      0 0 20px rgba(0, 212, 255, 0.3),
+      inset 0 0 20px rgba(0, 212, 255, 0.1);
+  }
+  50% {
+    box-shadow: 
+      0 0 40px rgba(0, 204, 170, 0.6),
+      inset 0 0 30px rgba(0, 204, 170, 0.2);
+    border-color: var(--accent-teal);
+  }
+}
+
+.ship-info {
+  text-align: center;
+}
+
+.ship-name {
+  margin-bottom: var(--space-xs);
+  color: var(--primary-cyan);
+  text-shadow: 0 0 10px var(--primary-cyan);
+}
+
+.ship-type {
+  color: var(--text-light-gray);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* ============================================================================
+   Fitting Slots Layout
+   ============================================================================ */
+
+.fitting-layout {
+  padding: var(--space-lg);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-lg);
+  background: rgba(0, 0, 0, 0.2);
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.slot-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.slot-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: var(--space-sm);
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.slot-count {
+  color: var(--text-light-gray);
+  opacity: 0.7;
+}
+
+.slots-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.fitting-slot {
+  width: 50px;
+  height: 50px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--duration-normal) ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.fitting-slot.empty {
+  background: rgba(0, 0, 0, 0.4);
+  border: 2px dashed var(--glass-border);
+}
+
+.fitting-slot.filled {
+  background: linear-gradient(135deg, 
+    rgba(0, 212, 255, 0.2) 0%, 
+    rgba(0, 0, 0, 0.5) 100%);
+  border: 2px solid var(--primary-cyan);
+  box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+}
+
+.fitting-slot:hover {
+  transform: scale(1.1);
+  z-index: 10;
+}
+
+.fitting-slot.empty:hover {
+  border-color: var(--glass-border-hover);
+  background: rgba(0, 212, 255, 0.1);
+}
+
+.fitting-slot.filled:hover {
+  box-shadow: 0 0 25px rgba(0, 212, 255, 0.5);
+}
+
+.module-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.module-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  height: 80%;
+  background: radial-gradient(circle, 
+    rgba(0, 212, 255, 0.3) 0%, 
+    transparent 70%);
+  border-radius: 50%;
+  animation: glowPulse 2s ease-in-out infinite;
+}
+
+.module-symbol {
+  font-size: 20px;
+  color: var(--primary-cyan);
+  text-shadow: 0 0 10px var(--primary-cyan);
+  z-index: 2;
+}
+
+.empty-slot-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.slot-number {
+  font-size: var(--font-small);
+  color: var(--text-light-gray);
+  opacity: 0.5;
+  font-weight: var(--font-medium);
+}
+
+/* Slot Type Colors */
+.high-slot.filled {
+  border-color: var(--accent-orange);
+  box-shadow: 0 0 15px rgba(255, 119, 34, 0.3);
+}
+
+.med-slot.filled {
+  border-color: var(--primary-electric-blue);
+  box-shadow: 0 0 15px rgba(0, 102, 255, 0.3);
+}
+
+.low-slot.filled {
+  border-color: var(--accent-teal);
+  box-shadow: 0 0 15px rgba(0, 204, 170, 0.3);
+}
+
+.rig-slot.filled {
+  border-color: var(--primary-cyan);
+  box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+}
+
+/* ============================================================================
+   Fitting Actions
+   ============================================================================ */
+
+.fitting-actions {
+  padding: var(--space-lg);
+  display: flex;
+  gap: var(--space-md);
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.1);
+}
+
+/* ============================================================================
+   Responsive Design
+   ============================================================================ */
+
+@media (max-width: 1199px) {
+  .fitting-layout {
+    grid-template-columns: 1fr;
+    gap: var(--space-md);
+  }
+  
+  .ship-wireframe {
+    width: 250px;
+    height: 150px;
+  }
+  
+  .hull-outline {
+    width: 200px;
+    height: 100px;
+  }
+}
+
+@media (max-width: 767px) {
+  .ship-fitting-panel .panel-header,
+  .fitting-layout,
+  .fitting-actions {
+    padding: var(--space-md);
+  }
+  
+  .ship-display-area {
+    min-height: 200px;
+  }
+  
+  .ship-wireframe {
+    width: 200px;
+    height: 120px;
+  }
+  
+  .hull-outline {
+    width: 160px;
+    height: 80px;
+  }
+  
+  .fitting-slot {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .fitting-actions {
+    flex-direction: column;
+  }
+}

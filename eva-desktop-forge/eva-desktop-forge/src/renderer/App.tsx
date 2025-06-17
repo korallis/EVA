@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { HashRouter } from 'react-router-dom';
 import MainLayout from './layouts/MainLayout';
 import AppRoutes from './routes';
-import StartupProgress from './components/StartupProgress';
 import './styles/design-system.css';
 import './App.css';
 
@@ -25,34 +24,31 @@ const App: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [characters, setCharacters] = useState<any[]>([]);
   const [activeCharacter, setActiveCharacter] = useState<any | null>(null);
-  const [showStartupProgress, setShowStartupProgress] = useState(true);
 
   useEffect(() => {
     loadCharacters();
-    
-    // Auto-dismiss startup screen after app is ready
-    const startupTimer = setTimeout(() => {
-      if (showStartupProgress) {
-        setShowStartupProgress(false);
-      }
-    }, 3000);
 
     // Listen for authentication success
     window.electronAPI.auth.onSuccess(() => {
+      console.log('📥 Received auth:success event');
       loadCharacters();
     });
-
-    // Listen for startup completion
-    window.electronAPI.startup.onSDEComplete((result) => {
-      setTimeout(() => {
-        setShowStartupProgress(false);
-      }, result.success ? 2500 : 1000);
-    });
+    
+    // Listen for logout events
+    const handleLogout = () => {
+      console.log('📥 Received logout event');
+      setIsAuthenticated(false);
+      setCharacters([]);
+      setActiveCharacter(null);
+    };
+    
+    // Add logout listener if available
+    if (window.electronAPI.auth.onLogout) {
+      window.electronAPI.auth.onLogout(handleLogout);
+    }
 
     return () => {
-      clearTimeout(startupTimer);
       window.electronAPI.auth.removeAllListeners();
-      window.electronAPI.startup.removeSDEListeners();
     };
   }, []);
 
@@ -67,11 +63,11 @@ const App: React.FC = () => {
       setIsAuthenticated(authStatus || allCharacters.length > 0);
     } catch (error) {
       console.error('Failed to load characters:', error);
+      // On error, assume not authenticated
+      setIsAuthenticated(false);
+      setCharacters([]);
+      setActiveCharacter(null);
     }
-  };
-
-  const handleStartupComplete = () => {
-    setShowStartupProgress(false);
   };
 
   const contextValue = {
@@ -83,21 +79,13 @@ const App: React.FC = () => {
   };
 
   return (
-    <>
-      {/* Startup Progress Overlay */}
-      <StartupProgress 
-        isVisible={showStartupProgress}
-        onComplete={handleStartupComplete}
-      />
-      
-      <CharacterContext.Provider value={contextValue}>
-        <HashRouter>
-          <MainLayout>
-            <AppRoutes />
-          </MainLayout>
-        </HashRouter>
-      </CharacterContext.Provider>
-    </>
+    <CharacterContext.Provider value={contextValue}>
+      <HashRouter>
+        <MainLayout>
+          <AppRoutes />
+        </MainLayout>
+      </HashRouter>
+    </CharacterContext.Provider>
   );
 };
 

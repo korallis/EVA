@@ -1,0 +1,92 @@
+/* ============================================================================
+   Circular Progress Component
+   Animated holographic progress rings
+   ============================================================================ */
+
+.circular-progress {
+  display: inline-block;
+  position: relative;
+}
+
+.progress-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.progress-svg {
+  transform: rotate(-90deg);
+  filter: drop-shadow(0 0 10px rgba(0, 212, 255, 0.3));
+}
+
+.progress-bg {
+  opacity: 0.3;
+}
+
+.progress-circle {
+  transition: stroke-dashoffset var(--duration-extra-slow) cubic-bezier(0.4, 0, 0.2, 1);
+  filter: drop-shadow(0 0 5px currentColor);
+}
+
+.progress-glow {
+  opacity: 0.6;
+  filter: blur(2px);
+  transition: stroke-dashoffset var(--duration-extra-slow) cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.progress-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  pointer-events: none;
+}
+
+.progress-value {
+  font-family: var(--font-mono);
+  font-weight: var(--font-bold);
+  color: var(--primary-cyan);
+  text-shadow: 0 0 10px var(--primary-cyan);
+  line-height: 1;
+  margin-bottom: 2px;
+}
+
+.progress-label {
+  color: var(--text-light-gray);
+  white-space: nowrap;
+  font-weight: var(--font-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Animation states */
+.circular-progress:hover .progress-circle {
+  animation: glowPulse 2s ease-in-out infinite;
+}
+
+.circular-progress:hover .progress-glow {
+  opacity: 0.8;
+}
+
+/* Sizes */
+.circular-progress.size-sm {
+  --size: 60px;
+  --stroke: 4px;
+}
+
+.circular-progress.size-md {
+  --size: 100px;
+  --stroke: 6px;
+}
+
+.circular-progress.size-lg {
+  --size: 140px;
+  --stroke: 10px;
+}
+
+.circular-progress.size-xl {
+  --size: 180px;
+  --stroke: 12px;
+}

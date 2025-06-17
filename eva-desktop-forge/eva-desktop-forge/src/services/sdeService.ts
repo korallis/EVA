@@ -462,6 +462,187 @@ class SDEService {
     }));
   }
 
+  // SDE Statistics Methods
+  async getShipCountsByRace(): Promise<Record<string, number>> {
+    const results = await this.allQuery(`
+      SELECT 
+        CASE 
+          WHEN t.raceID = 1 THEN 'Caldari'
+          WHEN t.raceID = 2 THEN 'Minmatar' 
+          WHEN t.raceID = 4 THEN 'Amarr'
+          WHEN t.raceID = 8 THEN 'Gallente'
+          ELSE 'Other'
+        END as raceName,
+        COUNT(*) as count
+      FROM inv_types t
+      WHERE t.categoryID = 6 AND t.published = 1
+      GROUP BY t.raceID
+      ORDER BY count DESC
+    `);
+
+    const shipCounts: Record<string, number> = {};
+    results.forEach((row: any) => {
+      shipCounts[row.raceName] = row.count;
+    });
+    
+    return shipCounts;
+  }
+
+  async getModuleCountsByCategory(): Promise<Record<string, number>> {
+    const results = await this.allQuery(`
+      SELECT 
+        CASE 
+          WHEN c.categoryName = 'Module' THEN 'Modules'
+          WHEN c.categoryName = 'Charge' THEN 'Ammunition'
+          WHEN c.categoryName = 'Drone' THEN 'Drones'
+          WHEN c.categoryName = 'Implant' THEN 'Implants'
+          ELSE c.categoryName
+        END as categoryName,
+        COUNT(*) as count
+      FROM inv_types t
+      LEFT JOIN categories c ON t.categoryID = c.categoryID
+      WHERE t.categoryID IN (7, 8, 18, 32) AND t.published = 1
+      GROUP BY c.categoryID
+      ORDER BY count DESC
+    `);
+
+    const moduleCounts: Record<string, number> = {};
+    results.forEach((row: any) => {
+      moduleCounts[row.categoryName] = row.count;
+    });
+    
+    return moduleCounts;
+  }
+
+  async getSDEStatistics(): Promise<{
+    version: string;
+    lastUpdated: string;
+    totalShips: number;
+    totalModules: number;
+    totalItems: number;
+    shipsByRace: Record<string, number>;
+    modulesByCategory: Record<string, number>;
+  }> {
+    // Get SDE version and update info
+    const versionInfo = await this.getQuery(`
+      SELECT value FROM sde_metadata WHERE key = 'sde_version'
+    `);
+    
+    const updateInfo = await this.getQuery(`
+      SELECT value FROM sde_metadata WHERE key = 'last_import'
+    `);
+
+    // Get total counts
+    const shipCount = await this.getQuery(`
+      SELECT COUNT(*) as count FROM inv_types WHERE categoryID = 6 AND published = 1
+    `);
+    
+    const moduleCount = await this.getQuery(`
+      SELECT COUNT(*) as count FROM inv_types WHERE categoryID IN (7, 8, 18, 32) AND published = 1
+    `);
+    
+    const totalCount = await this.getQuery(`
+      SELECT COUNT(*) as count FROM inv_types WHERE published = 1
+    `);
+
+    // Get detailed breakdowns
+    const shipsByRace = await this.getShipCountsByRace();
+    const modulesByCategory = await this.getModuleCountsByCategory();
+
+    return {
+      version: versionInfo?.value || 'Unknown',
+      lastUpdated: updateInfo?.value || 'Unknown',
+      totalShips: shipCount?.count || 0,
+      totalModules: moduleCount?.count || 0,
+      totalItems: totalCount?.count || 0,
+      shipsByRace,
+      modulesByCategory
+    };
+  }
+
+  // Get implant names by IDs
+  async getImplantNames(implantIds: number[]): Promise<Record<number, string>> {
+    if (implantIds.length === 0) return {};
+    
+    const placeholders = implantIds.map(() => '?').join(',');
+    const results = await this.allQuery(`
+      SELECT typeID, typeName 
+      FROM inv_types 
+      WHERE typeID IN (${placeholders})
+    `, implantIds);
+
+    const implantNames: Record<number, string> = {};
+    results.forEach((row: any) => {
+      implantNames[row.typeID] = row.typeName;
+    });
+    
+    return implantNames;
+  }
+
+  // Get blueprint names by type IDs
+  async getBlueprintNames(typeIds: number[]): Promise<Record<number, string>> {
+    if (typeIds.length === 0) return {};
+    
+    const placeholders = typeIds.map(() => '?').join(',');
+    const results = await this.allQuery(`
+      SELECT typeID, typeName 
+      FROM inv_types 
+      WHERE typeID IN (${placeholders})
+    `, typeIds);
+
+    const blueprintNames: Record<number, string> = {};
+    results.forEach((row: any) => {
+      blueprintNames[row.typeID] = row.typeName;
+    });
+    
+    return blueprintNames;
+  }
+
+  // Get blueprint statistics
+  async getBlueprintStatistics(): Promise<{
+    totalBlueprints: number;
+    blueprintsByCategory: Record<string, number>;
+  }> {
+    // Get total blueprint count
+    const totalResult = await this.getQuery(`
+      SELECT COUNT(*) as count 
+      FROM inv_types 
+      WHERE groupID IN (
+        SELECT groupID FROM inv_groups 
+        WHERE categoryID = 9 OR groupName LIKE '%Blueprint%'
+      )
+    `);
+
+    // Get blueprints by category/group
+    const categoryResults = await this.allQuery(`
+      SELECT 
+        CASE 
+          WHEN g.groupName LIKE '%Ship%' THEN 'Ship Blueprints'
+          WHEN g.groupName LIKE '%Module%' THEN 'Module Blueprints'
+          WHEN g.groupName LIKE '%Ammunition%' THEN 'Ammo Blueprints'
+          WHEN g.groupName LIKE '%Drone%' THEN 'Drone Blueprints'
+          WHEN g.groupName LIKE '%Structure%' THEN 'Structure Blueprints'
+          ELSE 'Other Blueprints'
+        END as category,
+        COUNT(*) as count
+      FROM inv_types t
+      INNER JOIN inv_groups g ON t.groupID = g.groupID
+      WHERE g.categoryID = 9 OR g.groupName LIKE '%Blueprint%'
+      GROUP BY category
+      ORDER BY count DESC
+    `);
+
+    const blueprintsByCategory: Record<string, number> = {};
+    categoryResults.forEach((row: any) => {
+      blueprintsByCategory[row.category] = row.count;
+    });
+
+    return {
+      totalBlueprints: totalResult?.count || 0,
+      blueprintsByCategory
+    };
+  }
+
   // Helper methods
   runQuery(sql: string, params: any[] = []): Promise<any> {
     return new Promise((resolve, reject) => {

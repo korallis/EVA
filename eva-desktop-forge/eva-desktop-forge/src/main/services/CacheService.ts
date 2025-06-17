@@ -41,9 +41,26 @@ export class CacheService {
     CHARACTER_SKILL_QUEUE: 60 * 1000, // 1 minute (very dynamic)
     CHARACTER_ATTRIBUTES: 60 * 60 * 1000, // 1 hour
     
+    // Character Location & Ship - changes frequently
+    CHARACTER_LOCATION: 60 * 1000, // 1 minute (location changes frequently)
+    CHARACTER_SHIP: 5 * 60 * 1000, // 5 minutes (ship changes moderately)
+    
+    // Character Wallet & Assets - changes frequently
+    CHARACTER_WALLET: 5 * 60 * 1000, // 5 minutes
+    CHARACTER_ASSETS: 10 * 60 * 1000, // 10 minutes
+    
+    // Character Corporation History - changes rarely
+    CHARACTER_CORPORATION_HISTORY: 60 * 60 * 1000, // 1 hour
+    
+    // Character Clones & Implants - changes rarely
+    CHARACTER_CLONES: 60 * 60 * 1000, // 1 hour
+    CHARACTER_IMPLANTS: 60 * 60 * 1000, // 1 hour
+    
     // Static data - rarely changes
     SKILL_TYPES: 7 * 24 * 60 * 60 * 1000, // 7 days
     UNIVERSE_TYPES: 7 * 24 * 60 * 60 * 1000, // 7 days
+    UNIVERSE_SYSTEMS: 24 * 60 * 60 * 1000, // 24 hours
+    UNIVERSE_STATIONS: 24 * 60 * 60 * 1000, // 24 hours
     SDE_DATA: 30 * 24 * 60 * 60 * 1000, // 30 days
     
     // Market and dynamic data

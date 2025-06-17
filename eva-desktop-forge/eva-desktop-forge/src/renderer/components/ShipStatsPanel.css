@@ -1,0 +1,321 @@
+/* ============================================================================
+   Ship Stats Panel
+   Right panel with detailed ship statistics and performance metrics
+   ============================================================================ */
+
+.ship-stats-panel {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.ship-stats-panel .panel-header {
+  padding: var(--space-lg);
+  border-bottom: 1px solid var(--glass-border);
+  position: relative;
+  text-align: center;
+}
+
+.stats-summary {
+  margin-top: var(--space-sm);
+  opacity: 0.8;
+}
+
+.panel-content {
+  flex: 1;
+  padding: var(--space-lg);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+}
+
+/* ============================================================================
+   Stats Sections
+   ============================================================================ */
+
+.stats-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.section-title {
+  padding-bottom: var(--space-sm);
+  border-bottom: 1px solid var(--glass-border);
+  color: var(--primary-cyan);
+  position: relative;
+}
+
+.section-title::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 30%;
+  height: 1px;
+  background: var(--primary-cyan);
+  box-shadow: 0 0 5px var(--primary-cyan);
+}
+
+/* ============================================================================
+   EHP Section
+   ============================================================================ */
+
+.ehp-breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.ehp-total {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--space-lg);
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  position: relative;
+  overflow: hidden;
+}
+
+.ehp-total::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    var(--primary-cyan) 50%, 
+    transparent 100%);
+  opacity: 0.6;
+}
+
+.ehp-value {
+  color: var(--primary-cyan);
+  text-shadow: 0 0 15px var(--primary-cyan);
+  font-weight: var(--font-black);
+  margin-bottom: 4px;
+}
+
+.ehp-label {
+  color: var(--text-light-gray);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.ehp-bars {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.ehp-bar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.ehp-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.progress-track {
+  height: 8px;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  position: relative;
+  border: 1px solid var(--glass-border);
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: var(--radius-sm);
+  transition: width var(--duration-slow) cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  box-shadow: 0 0 10px currentColor;
+}
+
+.progress-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    rgba(255, 255, 255, 0.3) 50%, 
+    transparent 100%);
+  animation: progressShimmer 3s ease-in-out infinite;
+}
+
+/* ============================================================================
+   Stat Grid Layout
+   ============================================================================ */
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: var(--space-md);
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: var(--space-md);
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-sm);
+  transition: all var(--duration-normal) ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    var(--primary-cyan) 50%, 
+    transparent 100%);
+  opacity: 0;
+  transition: opacity var(--duration-normal) ease;
+}
+
+.stat-item:hover {
+  background: rgba(0, 0, 0, 0.4);
+  border-color: var(--glass-border-hover);
+  transform: translateY(-2px);
+}
+
+.stat-item:hover::before {
+  opacity: 0.8;
+}
+
+.stat-value {
+  color: var(--text-white);
+  font-weight: var(--font-bold);
+  margin-bottom: 4px;
+  font-family: var(--font-mono);
+}
+
+.stat-label {
+  color: var(--text-light-gray);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ============================================================================
+   Capacitor Section
+   ============================================================================ */
+
+.capacitor-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.cap-status {
+  display: flex;
+  justify-content: center;
+}
+
+.cap-indicator {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-md) var(--space-lg);
+  background: rgba(0, 0, 0, 0.3);
+  border: 2px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  transition: all var(--duration-normal) ease;
+}
+
+.cap-indicator.stable {
+  border-color: var(--accent-teal);
+  background: rgba(0, 204, 170, 0.1);
+  box-shadow: 0 0 15px rgba(0, 204, 170, 0.3);
+}
+
+.cap-indicator.unstable {
+  border-color: var(--accent-orange);
+  background: rgba(255, 119, 34, 0.1);
+  box-shadow: 0 0 15px rgba(255, 119, 34, 0.3);
+  animation: glowPulse 2s ease-in-out infinite;
+}
+
+.cap-icon {
+  font-size: 20px;
+}
+
+.cap-text {
+  font-weight: var(--font-medium);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.cap-stats {
+  display: flex;
+  justify-content: center;
+}
+
+/* ============================================================================
+   Animations
+   ============================================================================ */
+
+@keyframes progressShimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* ============================================================================
+   Responsive Design
+   ============================================================================ */
+
+@media (max-width: 1199px) {
+  .stat-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .ehp-breakdown {
+    gap: var(--space-md);
+  }
+  
+  .panel-content {
+    gap: var(--space-lg);
+  }
+}
+
+@media (max-width: 767px) {
+  .ship-stats-panel .panel-header,
+  .panel-content {
+    padding: var(--space-md);
+  }
+  
+  .stat-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-sm);
+  }
+  
+  .ehp-total {
+    padding: var(--space-md);
+  }
+  
+  .panel-content {
+    gap: var(--space-md);
+  }
+}

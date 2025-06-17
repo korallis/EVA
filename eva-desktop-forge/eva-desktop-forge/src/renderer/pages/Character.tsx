@@ -1,12 +1,12 @@
 import React from 'react';
 
-const ShipBrowser: React.FC = () => {
+const Character: React.FC = () => {
   return (
     <div className="page-container">
       <div className="glass-panel" style={{ padding: 'var(--space-xl)', textAlign: 'center' }}>
-        <h1 className="text-hero">Ship Browser</h1>
+        <h1 className="text-hero">Character</h1>
         <p className="text-body" style={{ marginTop: 'var(--space-lg)', opacity: 0.8 }}>
-          Browse and analyze ships from across New Eden
+          View character information and manage accounts
         </p>
         <div style={{ marginTop: 'var(--space-xl)' }}>
           <button className="btn btn-primary">Coming Soon</button>
@@ -16,4 +16,4 @@ const ShipBrowser: React.FC = () => {
   );
 };
 
-export default ShipBrowser;
+export default Character;

@@ -15,19 +15,56 @@ contextBridge.exposeInMainWorld('electronAPI', {
     onSuccess: (callback: () => void) => {
       ipcRenderer.on('auth:success', callback);
     },
+    onLogout: (callback: () => void) => {
+      ipcRenderer.on('auth:logout', callback);
+    },
     removeAllListeners: () => {
       ipcRenderer.removeAllListeners('auth:success');
+      ipcRenderer.removeAllListeners('auth:logout');
     }
   },
   
   // ESI API
   esi: {
+    // Character Skills
     getCharacterSkills: (characterId: string) => 
       ipcRenderer.invoke('esi:getCharacterSkills', characterId),
     getCharacterSkillQueue: (characterId: string) => 
       ipcRenderer.invoke('esi:getCharacterSkillQueue', characterId),
     getSkillTypes: (skillIds: number[]) => 
-      ipcRenderer.invoke('esi:getSkillTypes', skillIds)
+      ipcRenderer.invoke('esi:getSkillTypes', skillIds),
+    
+    // Character Location & Ship
+    getCharacterLocation: (characterId?: string) => 
+      ipcRenderer.invoke('esi:getCharacterLocation', characterId),
+    getCharacterShip: (characterId?: string) => 
+      ipcRenderer.invoke('esi:getCharacterShip', characterId),
+    
+    // Character Wallet
+    getCharacterWallet: (characterId?: string) => 
+      ipcRenderer.invoke('esi:getCharacterWallet', characterId),
+    
+    // Corporation
+    getCorporationInfo: (corporationId: number) => 
+      ipcRenderer.invoke('esi:getCorporationInfo', corporationId),
+    getCharacterCorporationHistory: (characterId?: string) => 
+      ipcRenderer.invoke('esi:getCharacterCorporationHistory', characterId),
+    
+    // Character Clones & Implants
+    getCharacterClones: (characterId?: string) => 
+      ipcRenderer.invoke('esi:getCharacterClones', characterId),
+    getCharacterImplants: (characterId?: string) => 
+      ipcRenderer.invoke('esi:getCharacterImplants', characterId),
+    getCharacterBlueprints: (characterId?: string) => 
+      ipcRenderer.invoke('esi:getCharacterBlueprints', characterId),
+    getEnhancedCharacterClones: (characterId?: string) => 
+      ipcRenderer.invoke('esi:getEnhancedCharacterClones', characterId),
+    
+    // Universe Data
+    getSystemInfo: (systemId: number) => 
+      ipcRenderer.invoke('esi:getSystemInfo', systemId),
+    getStationInfo: (stationId: number) => 
+      ipcRenderer.invoke('esi:getStationInfo', stationId)
   },
 
   // SDE and Fitting API
@@ -43,6 +80,13 @@ contextBridge.exposeInMainWorld('electronAPI', {
     getInstalledVersion: () => ipcRenderer.invoke('sde:getInstalledVersion'),
     download: () => ipcRenderer.invoke('sde:download'),
     parse: () => ipcRenderer.invoke('sde:parse'),
+    // Statistics methods
+    getShipCountsByRace: () => ipcRenderer.invoke('sde:getShipCountsByRace'),
+    getModuleCountsByCategory: () => ipcRenderer.invoke('sde:getModuleCountsByCategory'),
+    getStatistics: () => ipcRenderer.invoke('sde:getStatistics'),
+    getImplantNames: (implantIds: number[]) => ipcRenderer.invoke('sde:getImplantNames', implantIds),
+    getBlueprintNames: (typeIds: number[]) => ipcRenderer.invoke('sde:getBlueprintNames', typeIds),
+    getBlueprintStatistics: () => ipcRenderer.invoke('sde:getBlueprintStatistics'),
     onDownloadProgress: (callback: (progress: any) => void) => {
       ipcRenderer.on('sde:downloadProgress', (_, progress) => callback(progress));
     },
@@ -146,12 +190,24 @@ export interface ElectronAPI {
     } | null>;
     logout: () => Promise<void>;
     onSuccess: (callback: () => void) => void;
+    onLogout: (callback: () => void) => void;
     removeAllListeners: () => void;
   };
   esi: {
     getCharacterSkills: (characterId: string) => Promise<any>;
     getCharacterSkillQueue: (characterId: string) => Promise<any>;
     getSkillTypes: (skillIds: number[]) => Promise<Record<number, any>>;
+    getCharacterLocation: (characterId?: string) => Promise<any>;
+    getCharacterShip: (characterId?: string) => Promise<any>;
+    getCharacterWallet: (characterId?: string) => Promise<number>;
+    getCorporationInfo: (corporationId: number) => Promise<any>;
+    getCharacterCorporationHistory: (characterId?: string) => Promise<any>;
+    getCharacterClones: (characterId?: string) => Promise<any>;
+    getCharacterImplants: (characterId?: string) => Promise<any>;
+    getCharacterBlueprints: (characterId?: string) => Promise<any>;
+    getEnhancedCharacterClones: (characterId?: string) => Promise<any>;
+    getSystemInfo: (systemId: number) => Promise<any>;
+    getStationInfo: (stationId: number) => Promise<any>;
   };
   sde: {
     initialize: () => Promise<boolean>;
@@ -165,6 +221,23 @@ export interface ElectronAPI {
     getInstalledVersion: () => Promise<any>;
     download: () => Promise<{ success: boolean; message?: string; error?: string }>;
     parse: () => Promise<{ ships: number; modules: number; attributes: number; version: string }>;
+    getShipCountsByRace: () => Promise<Record<string, number>>;
+    getModuleCountsByCategory: () => Promise<Record<string, number>>;
+    getStatistics: () => Promise<{
+      version: string;
+      lastUpdated: string;
+      totalShips: number;
+      totalModules: number;
+      totalItems: number;
+      shipsByRace: Record<string, number>;
+      modulesByCategory: Record<string, number>;
+    }>;
+    getImplantNames: (implantIds: number[]) => Promise<Record<number, string>>;
+    getBlueprintNames: (typeIds: number[]) => Promise<Record<number, string>>;
+    getBlueprintStatistics: () => Promise<{
+      totalBlueprints: number;
+      blueprintsByCategory: Record<string, number>;
+    }>;
     onDownloadProgress: (callback: (progress: any) => void) => void;
     removeDownloadProgressListener: () => void;
   };

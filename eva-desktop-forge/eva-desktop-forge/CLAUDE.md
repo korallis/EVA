@@ -4,11 +4,22 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-EVA (EVE Virtual Assistant) is a cross-platform desktop application for EVE Online players that integrates with the ESI API to display character skills and skill queues. The application recreates the exact visual design and user experience of the EVE Online launcher.
+EVA (EVE Virtual Assistant) is a **native cross-platform desktop application** built with **Electron Forge** for EVE Online players. This is **NOT a website or web application** - it is a fully native desktop app that integrates with the ESI API to provide comprehensive character management and overview functionality.
+
+## ⚠️ CRITICAL: This is an Electron Desktop Application
+
+**ALL CODE MUST BE WRITTEN FOR ELECTRON FORGE DESKTOP APP ARCHITECTURE:**
+
+- ✅ **Main Process (Node.js)**: Backend services, ESI API calls, file system access
+- ✅ **Renderer Process (React)**: Frontend UI running in Electron webview
+- ✅ **Preload Script**: Secure IPC bridge between main and renderer
+- ✅ **Native Desktop Features**: File system, notifications, system tray, URL schemes
+- ✅ **Electron-specific APIs**: `ipcMain`, `ipcRenderer`, `contextBridge`, `app`, `BrowserWindow`
+- ❌ **NOT a website**: No server-side rendering, no web deployment, no browser compatibility concerns
 
 ## Architecture & Technology Stack
 
-This project uses the **exact same technology stack** as the EVE Online launcher after analyzing CCP's implementation:
+This project uses **Electron Forge with React** specifically for desktop application development:
 
 ### Core Framework
 - **Electron 36.1.0** with React 18.2.0 + TypeScript frontend

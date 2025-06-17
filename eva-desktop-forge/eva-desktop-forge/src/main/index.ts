@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain } from 'electron';
+import { app, BrowserWindow, ipcMain, nativeImage } from 'electron';
 import { authService } from './services/AuthService';
 import { esiService } from './services/EsiService';
 import { settingsService } from './services/SettingsService';
@@ -8,6 +8,7 @@ import { characterService } from './services/CharacterService';
 import { skillQueueService } from './services/SkillQueueService';
 import { SystemTrayService } from './services/SystemTrayService';
 import { sdeService } from '../services/sdeService';
+import * as path from 'path';
 import { sdeImporter } from '../services/sdeImporter';
 import { sdeDownloader } from '../services/sdeDownloader';
 import { startupSDEManager } from '../services/startupSDEManager';
@@ -26,6 +27,22 @@ let mainWindow: BrowserWindow | null = null;
 let systemTray: SystemTrayService | null = null;
 
 const createWindow = (): void => {
+  // Set dock icon on macOS
+  if (process.platform === 'darwin') {
+    try {
+      const iconPath = path.join(__dirname, '../../src/assets/icons/icon.png');
+      const dockIcon = nativeImage.createFromPath(iconPath);
+      if (!dockIcon.isEmpty()) {
+        app.dock.setIcon(dockIcon);
+        console.log('✅ Dock icon set successfully');
+      } else {
+        console.warn('⚠️ Could not load dock icon from:', iconPath);
+      }
+    } catch (error) {
+      console.error('❌ Failed to set dock icon:', error);
+    }
+  }
+
   // Get saved window state
   const windowState = settingsService.getWindowState();
   
@@ -48,7 +65,9 @@ const createWindow = (): void => {
       enableBlinkFeatures: '', // Disable experimental features
       disableBlinkFeatures: 'Autofill' // Disable autofill to prevent console errors
     },
-    icon: require('path').join(__dirname, '../assets/icons/icon.png'),
+    icon: process.platform === 'darwin' 
+      ? require('path').join(__dirname, '..', 'assets', 'icons', 'icon.icns')
+      : require('path').join(__dirname, '..', 'assets', 'icons', 'icon.png'),
     show: false // Don't show until ready
   });
 
@@ -231,6 +250,11 @@ ipcMain.handle('auth:logout', async () => {
   try {
     await authService.logout();
     console.log('✅ Logout successful');
+    
+    // Notify renderer of logout
+    if (mainWindow) {
+      mainWindow.webContents.send('auth:logout');
+    }
   } catch (error) {
     console.error('❌ Logout failed:', error);
     throw error;
@@ -281,6 +305,114 @@ ipcMain.handle('esi:refreshCharacterData', async (event, characterId?: number) =
     return await esiService.refreshCharacterData(characterId);
   } catch (error) {
     console.error('❌ Failed to refresh character data:', error);
+    throw error;
+  }
+});
+
+// New ESI Character Overview handlers
+ipcMain.handle('esi:getCharacterLocation', async (event, characterId?: string) => {
+  try {
+    const id = characterId ? parseInt(characterId) : undefined;
+    return await esiService.getCharacterLocation(id);
+  } catch (error) {
+    console.error('❌ Failed to fetch character location:', error);
+    throw error;
+  }
+});
+
+ipcMain.handle('esi:getCharacterShip', async (event, characterId?: string) => {
+  try {
+    const id = characterId ? parseInt(characterId) : undefined;
+    return await esiService.getCharacterShip(id);
+  } catch (error) {
+    console.error('❌ Failed to fetch character ship:', error);
+    throw error;
+  }
+});
+
+ipcMain.handle('esi:getCharacterWallet', async (event, characterId?: string) => {
+  try {
+    const id = characterId ? parseInt(characterId) : undefined;
+    return await esiService.getCharacterWallet(id);
+  } catch (error) {
+    console.error('❌ Failed to fetch character wallet:', error);
+    throw error;
+  }
+});
+
+ipcMain.handle('esi:getCorporationInfo', async (event, corporationId: number) => {
+  try {
+    return await esiService.getCorporationInfo(corporationId);
+  } catch (error) {
+    console.error('❌ Failed to fetch corporation info:', error);
+    throw error;
+  }
+});
+
+ipcMain.handle('esi:getCharacterCorporationHistory', async (event, characterId?: string) => {
+  try {
+    const id = characterId ? parseInt(characterId) : undefined;
+    return await esiService.getCharacterCorporationHistory(id);
+  } catch (error) {
+    console.error('❌ Failed to fetch corporation history:', error);
+    throw error;
+  }
+});
+
+ipcMain.handle('esi:getCharacterClones', async (event, characterId?: string) => {
+  try {
+    const id = characterId ? parseInt(characterId) : undefined;
+    return await esiService.getCharacterClones(id);
+  } catch (error) {
+    console.error('❌ Failed to fetch character clones:', error);
+    throw error;
+  }
+});
+
+ipcMain.handle('esi:getCharacterImplants', async (event, characterId?: string) => {
+  try {
+    const id = characterId ? parseInt(characterId) : undefined;
+    return await esiService.getCharacterImplants(id);
+  } catch (error) {
+    console.error('❌ Failed to fetch character implants:', error);
+    throw error;
+  }
+});
+
+ipcMain.handle('esi:getSystemInfo', async (event, systemId: number) => {
+  try {
+    return await esiService.getSystemInfo(systemId);
+  } catch (error) {
+    console.error('❌ Failed to fetch system info:', error);
+    throw error;
+  }
+});
+
+ipcMain.handle('esi:getStationInfo', async (event, stationId: number) => {
+  try {
+    return await esiService.getStationInfo(stationId);
+  } catch (error) {
+    console.error('❌ Failed to fetch station info:', error);
+    throw error;
+  }
+});
+
+ipcMain.handle('esi:getCharacterBlueprints', async (event, characterId?: string) => {
+  try {
+    const id = characterId ? parseInt(characterId) : undefined;
+    return await esiService.getCharacterBlueprints(id);
+  } catch (error) {
+    console.error('❌ Failed to fetch character blueprints:', error);
+    throw error;
+  }
+});
+
+ipcMain.handle('esi:getEnhancedCharacterClones', async (event, characterId?: string) => {
+  try {
+    const id = characterId ? parseInt(characterId) : undefined;
+    return await esiService.getEnhancedCharacterClones(id);
+  } catch (error) {
+    console.error('❌ Failed to fetch enhanced character clones:', error);
     throw error;
   }
 });
@@ -433,6 +565,61 @@ ipcMain.handle('sde:download', async (event) => {
   } catch (error) {
     console.error('❌ SDE download failed:', error);
     return { success: false, error: error.message };
+  }
+});
+
+// SDE Statistics handlers
+ipcMain.handle('sde:getShipCountsByRace', async () => {
+  try {
+    return await sdeService.getShipCountsByRace();
+  } catch (error) {
+    console.error('❌ Failed to get ship counts by race:', error);
+    throw error;
+  }
+});
+
+ipcMain.handle('sde:getModuleCountsByCategory', async () => {
+  try {
+    return await sdeService.getModuleCountsByCategory();
+  } catch (error) {
+    console.error('❌ Failed to get module counts by category:', error);
+    throw error;
+  }
+});
+
+ipcMain.handle('sde:getStatistics', async () => {
+  try {
+    return await sdeService.getSDEStatistics();
+  } catch (error) {
+    console.error('❌ Failed to get SDE statistics:', error);
+    throw error;
+  }
+});
+
+ipcMain.handle('sde:getImplantNames', async (event, implantIds: number[]) => {
+  try {
+    return await sdeService.getImplantNames(implantIds);
+  } catch (error) {
+    console.error('❌ Failed to get implant names:', error);
+    throw error;
+  }
+});
+
+ipcMain.handle('sde:getBlueprintNames', async (event, typeIds: number[]) => {
+  try {
+    return await sdeService.getBlueprintNames(typeIds);
+  } catch (error) {
+    console.error('❌ Failed to get blueprint names:', error);
+    throw error;
+  }
+});
+
+ipcMain.handle('sde:getBlueprintStatistics', async () => {
+  try {
+    return await sdeService.getBlueprintStatistics();
+  } catch (error) {
+    console.error('❌ Failed to get blueprint statistics:', error);
+    throw error;
   }
 });
 

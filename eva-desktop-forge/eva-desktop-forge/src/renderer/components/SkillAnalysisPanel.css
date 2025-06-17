@@ -1,0 +1,285 @@
+/* ============================================================================
+   Skill Analysis Panel
+   Left panel of dashboard with skill statistics and progress
+   ============================================================================ */
+
+.skill-analysis-panel {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.panel-header {
+  padding: var(--space-lg);
+  border-bottom: 1px solid var(--glass-border);
+  position: relative;
+}
+
+.panel-title {
+  text-align: center;
+  margin-bottom: var(--space-sm);
+}
+
+.panel-content {
+  flex: 1;
+  padding: var(--space-lg);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+}
+
+/* ============================================================================
+   Main Progress Section
+   ============================================================================ */
+
+.main-progress-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-lg);
+  padding: var(--space-lg) 0;
+}
+
+.main-progress {
+  position: relative;
+}
+
+.skill-summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-md);
+  width: 100%;
+}
+
+.skill-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: var(--space-md);
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-sm);
+  transition: all var(--duration-normal) ease;
+}
+
+.skill-stat:hover {
+  background: rgba(0, 212, 255, 0.1);
+  border-color: var(--glass-border-hover);
+  transform: translateY(-2px);
+}
+
+.stat-value {
+  color: var(--primary-cyan);
+  font-weight: var(--font-bold);
+  text-shadow: 0 0 8px var(--primary-cyan);
+  margin-bottom: 2px;
+}
+
+.stat-label {
+  color: var(--text-light-gray);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ============================================================================
+   Skill Categories Section
+   ============================================================================ */
+
+.skill-categories-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.section-title {
+  padding-bottom: var(--space-sm);
+  border-bottom: 1px solid var(--glass-border);
+  margin-bottom: var(--space-md);
+}
+
+.categories-grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.skill-category {
+  padding: var(--space-md);
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-sm);
+  transition: all var(--duration-normal) ease;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.skill-category:hover {
+  background: rgba(0, 0, 0, 0.4);
+  border-color: var(--glass-border-hover);
+  transform: translateY(-2px);
+}
+
+.category-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--space-sm);
+}
+
+.category-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.category-name {
+  font-weight: var(--font-medium);
+  color: var(--text-white);
+}
+
+.category-level {
+  color: var(--primary-cyan);
+  font-weight: var(--font-medium);
+}
+
+.category-skills {
+  color: var(--text-light-gray);
+  opacity: 0.7;
+}
+
+.category-progress {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.progress-track {
+  flex: 1;
+  height: 6px;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  position: relative;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: var(--radius-sm);
+  transition: width var(--duration-slow) cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.progress-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    rgba(255, 255, 255, 0.3) 50%, 
+    transparent 100%);
+  animation: progressShimmer 2s ease-in-out infinite;
+}
+
+@keyframes progressShimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.progress-text {
+  color: var(--text-light-gray);
+  font-weight: var(--font-medium);
+  min-width: 35px;
+  text-align: right;
+}
+
+/* ============================================================================
+   Skill Queue Section
+   ============================================================================ */
+
+.skill-queue-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.queue-items {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.queue-item {
+  padding: var(--space-md);
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-sm);
+  transition: all var(--duration-normal) ease;
+}
+
+.queue-item:hover {
+  background: rgba(0, 0, 0, 0.4);
+  border-color: var(--glass-border-hover);
+  transform: translateY(-1px);
+}
+
+.queue-skill {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-sm);
+}
+
+.skill-name {
+  font-weight: var(--font-medium);
+  color: var(--text-white);
+}
+
+.skill-time {
+  color: var(--accent-teal);
+  font-weight: var(--font-medium);
+  font-family: var(--font-mono);
+}
+
+.queue-progress .progress-track {
+  height: 4px;
+}
+
+/* ============================================================================
+   Responsive Design
+   ============================================================================ */
+
+@media (max-width: 1199px) {
+  .skill-summary {
+    grid-template-columns: 1fr;
+    gap: var(--space-sm);
+  }
+  
+  .main-progress-section {
+    gap: var(--space-md);
+  }
+  
+  .panel-content {
+    gap: var(--space-lg);
+  }
+}
+
+@media (max-width: 767px) {
+  .panel-header,
+  .panel-content {
+    padding: var(--space-md);
+  }
+  
+  .panel-content {
+    gap: var(--space-md);
+  }
+  
+  .main-progress-section {
+    padding: var(--space-md) 0;
+  }
+}

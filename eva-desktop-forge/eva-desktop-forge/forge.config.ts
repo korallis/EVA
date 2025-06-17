@@ -14,7 +14,7 @@ import { rendererConfig } from './webpack.renderer.config';
 const config: ForgeConfig = {
   packagerConfig: {
     asar: true,
-    icon: './src/assets/icons/icon.png', // Use PNG icon directly
+    icon: './src/assets/icons/icon.icns', // Use explicit .icns for macOS
     protocols: [
       {
         name: 'EVA Authentication',
