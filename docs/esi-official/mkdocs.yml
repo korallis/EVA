@@ -1,0 +1,170 @@
+site_name: EVE Developer Documentation
+site_url: !ENV [SITE_URL, 'https://developers.eveonline.com/docs/']
+
+repo_url: !ENV [GITHUB_REPO_URL, 'https://github.com/esi/esi-docs']
+repo_name: !ENV [GITHUB_REPOSITORY, 'esi/esi-docs']
+edit_uri: edit/main/docs/
+
+hooks:
+  - scripts/generate-snippets.py
+  - scripts/community-tools.py
+
+not_in_nav: |
+  community/sample-service/index.md
+
+theme:
+  name: material
+  logo: assets/images/eve-logo.svg
+  custom_dir: overrides
+  favicon: assets/images/favicon.ico
+  palette:
+    scheme: eveonline
+  font: false
+  features:
+    - content.action.view
+    - content.tooltips
+    - content.tabs.link
+    - navigation.expand
+    - navigation.indexes
+    - navigation.instant
+    - navigation.instant.progress
+    - navigation.path
+    - navigation.tabs
+    - navigation.tracking
+    - search.suggest
+    - search.highlight
+    - toc.follow
+    - toc.integrate
+
+watch:
+  - overrides
+  - snippets
+  - scripts
+  - main.py
+
+extra_css:
+  - assets/stylesheet/font.css
+  - assets/stylesheet/theme.css
+
+extra_javascript:
+  - assets/javascript/theme.js
+  - assets/javascript/mathjax.js
+  - https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.0.0/mermaid.min.js
+  - https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js
+
+extra:
+  homepage: /
+  analytics:
+    provider: custom
+    property: !ENV [GTM_ID, 'GTM-XXXXXXX']
+  hero:
+    title: "EVE Developer Documentation"
+    subtitle: "Crowdsourced documentation for third-party developers"
+  footer:
+    title: Follow EVE Online
+    socials:
+      - icon: facebook-f
+        url: https://www.facebook.com/eveonline
+      - icon: twitter
+        url: https://twitter.com/eveonline
+      - icon: youtube
+        url: https://www.youtube.com/channel/UCwF3VyalTHzL0L-GDlwtbRw/
+      - icon: twitch
+        url: https://www.twitch.tv/ccp
+      - icon: discord 
+        url: https://eveonline.com/discord
+      - icon: instagram
+        url: https://www.instagram.com/eveonline/
+      - icon: vk
+        url: https://vk.com/eveonline
+    columns:
+      - title: Play EVE Online
+        links:
+          - title: Play for Free
+            url: https://www.eveonline.com/signup
+          - title: Download the Game
+            url: https://www.eveonline.com/download
+          - title: Upgrade to Omega
+            url: https://store.eveonline.com/#omega
+          - title: System Requirements
+            url: https://support.eveonline.com/hc/en-us/articles/5885219196828-System-Requirements
+          - title: Starter Guide for Beginners
+            url: https://www.eveonline.com/eve-academy
+          - title: Return to EVE
+            url: https://www.eveonline.com/return
+          - title: Recover Account
+            url: https://secure.eveonline.com/RecoverAccount
+      - title: Current Players
+        links:
+          - title: Account Management
+            url: https://secure.eveonline.com/account
+          - title: Support
+            url: https://support.eveonline.com/
+          - title: Forums
+            url: https://forums.eveonline.com/
+          - title: Developers
+            url: https://developers.eveonline.com/
+          - title: Recruit a Friend
+            url: https://www.eveonline.com/recruit
+          - title: Redeem a Code
+            url: https://secure.eveonline.com/code-activation
+          - title: Character Transfer
+            url: https://secure.eveonline.com/transfer-character
+          - title: 3rd Party Retailers
+            url: https://secure.eveonline.com/third-party-retailers
+      - title: Worlds of EVE
+        links:
+          - title: EVE Universe
+            url: https://universe.eveonline.com
+          - title: EVE Fanfest
+            url: https://fanfest.eveonline.com
+          - title: Merch
+            url: https://merch.eve.com/
+          - title: Project Discovery
+            url: https://www.eveonline.com/discovery/
+      - title: Site Info
+        links:
+          - title: About CCP
+            url: https://www.ccpgames.com/company/about/
+          - title: Terms of Service
+            url: https://community.eveonline.com/support/policies/terms-of-service-en/
+          - title: Privacy Policy
+            url: https://community.eveonline.com/support/policies/privacy-policy-en/
+          - title: RSS Feed
+            url: https://developers.eveonline.com/feed.xml
+
+plugins:
+  - search
+  - tags
+  - open-in-new-tab
+  - literate-nav:
+      nav_file: menu.md
+  - privacy:
+      assets: false
+  - macros:
+      on_undefined: keep
+
+markdown_extensions:
+  - abbr
+  - admonition
+  - attr_list
+  - md_in_html
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - tables

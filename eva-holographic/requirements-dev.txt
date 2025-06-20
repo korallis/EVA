@@ -1,0 +1,16 @@
+# Development Dependencies
+
+# Testing
+pytest>=8.0.0
+pytest-asyncio>=0.23.0
+pytest-qt>=4.4.0
+
+# Code Quality
+black>=24.0.0
+flake8>=7.0.0
+mypy>=1.10.0
+pre-commit>=3.7.0
+
+# Development Tools
+ipython>=8.0.0
+ipdb>=0.13.0

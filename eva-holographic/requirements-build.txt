@@ -1,0 +1,11 @@
+# Build Dependencies
+
+# Executable Creation
+pyinstaller>=6.8.0
+auto-py-to-exe>=2.44.0
+
+# macOS specific
+py2app>=0.28.7; sys_platform == "darwin"
+
+# Windows specific
+pywin32>=306; sys_platform == "win32"
